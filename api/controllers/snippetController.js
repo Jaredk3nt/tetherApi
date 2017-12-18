@@ -21,9 +21,11 @@ exports.createSnippet = (req, res) => {
   });
 
   newSnip.save((err, snip) => {
+
     if(err) {
       res.send(err);
     }
+
     /* Update the parent to include the snip in its children list */
     Snippet.findByIdAndUpdate(
       newSnip.parent,
@@ -35,6 +37,7 @@ exports.createSnippet = (req, res) => {
         }
       }
     );
+
     /* Update the user to link to the new snippet */
     User.findByIdAndUpdate(
       newSnip.author,
