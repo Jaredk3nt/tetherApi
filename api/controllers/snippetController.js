@@ -16,7 +16,7 @@ exports.listAllSnippets = (req, res) => {
 exports.createSnippet = (req, res) => {
   var newSnip = new Snippet({
     body: req.body.body,
-    author: req.body.author,
+    author: req.user._id,
     parent: req.body.parent
   });
 
@@ -59,24 +59,27 @@ exports.getSnippet = (req, res) => {
     if(err) {
       res.send(err);
     }
+    
     res.json(snip);
   });
 };
 
 exports.updateSnippet = (req, res) => {
-  Snippet.findByIdAndUpdate(req.params.snipId, {body: req.body.body}, {new: true}, (err, snip) => {
+  Snippet.update({ _id: req.params.snipId, author: req.user._id }, {body: req.body.body}, {new: true}, (err, snip) => {
     if(err) {
       res.send(err);
     }
+
     res.json(snip);
   });
 };
 
 exports.deleteSnippet = (req, res) => {
-  Snippet.remove({_id: req.params.snipId}, (err, snip) => {
+  Snippet.remove({ _id: req.params.snipId, author: req.user._id }, (err, snip) => {
     if(err) {
       res.send(err);
     }
+
     res.json(snip);
   });
 };

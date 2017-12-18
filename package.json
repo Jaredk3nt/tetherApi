@@ -13,8 +13,11 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
-    "mongoose": "^4.13.7"
+    "mongoose": "^4.13.7",
+    "passport": "^0.4.0",
+    "passport-http": "^0.3.0"
   }
 }
