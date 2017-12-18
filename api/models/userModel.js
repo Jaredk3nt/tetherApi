@@ -3,23 +3,31 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-  username: {
-    type: String,
-    required: true
-  },
-  firstName: {
-    type: String,
-    default: ''
-  },
-  lastName: {
-    type: String,
-    default: ''
-  },
-  profileImg: {
-    type: String,
-    default: ''
-  },
-  snippets: []
+    username: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    passwordConf: {
+        type: String,
+        required: true,
+    },
+    profileImg: {
+        type: String,
+        default: ''
+    },
+    stories: []
 });
 
 module.exports = mongoose.model('User', UserSchema);
