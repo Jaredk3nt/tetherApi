@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
 
 exports.listAllSnippets = (req, res) => {
-  Snippet.find({}, (err, snip) => {
+  Snippet.find((err, snip) => {
     if(err) {
       res.send(err);
     }

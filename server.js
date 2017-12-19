@@ -6,7 +6,8 @@ var express = require('express'),
   User = require('./api/models/userModel'),
   bodyParser = require('body-parser'),
   passport = require('passport'),
-  authController = require('./api/controllers/auth');
+  authController = require('./api/controllers/auth'),
+  session = require('express-session');
 
 mongoose.connect('mongodb://localhost/Tetherdb', {
   useMongoClient: true
@@ -16,6 +17,11 @@ mongoose.Promise = global.Promise;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
+app.use(session({
+  secret: 'Super Secret Session Key',
+  saveUninitialized: true,
+  resave: true
+}));
 
 var routes = require('./api/routes/tetherRoutes');
 routes(app, authController);
