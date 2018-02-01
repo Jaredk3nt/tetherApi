@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-  User = mongoose.model('User');
+    User = mongoose.model('User');
 
 exports.listAllUsers = (req, res) => {
   User.find((err, users) => {
@@ -32,12 +32,12 @@ exports.createUser = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
-  User.findById(req.params.userId, (err, user) => {
-    if(err) {
-      res.send(err);
-    }
-    res.json(user);
-  })
+    User.findById(req.params.userId, (err, user) => {
+        if(err) {
+            res.send(err);
+        }
+        res.json(user);
+    });
 };
 
 exports.updateUser = (req, res) => {
