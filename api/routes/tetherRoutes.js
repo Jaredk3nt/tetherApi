@@ -3,20 +3,20 @@ module.exports = function(app, authController) {
   var storyController = require('../controllers/storyController'),
   userController = require('../controllers/userController');
 
-  app.route('/snips')
-    .get(authController.isAuthenticated, snipper.listAllSnippets)
-    .post(authController.isAuthenticated, snipper.createSnippet);
+  app.route('/stories')
+    .get(authController.isAuthenticated, storyController.listAllStories)
+    .post(authController.isAuthenticated, storyController.createStory);
 
-  app.route('/snips/:snipId')
-    .get(authController.isAuthenticated, snipper.getSnippet)
-    .put(authController.isAuthenticated, snipper.updateSnippet)
-    .delete(authController.isAuthenticated, snipper.deleteSnippet);
+  app.route('/stories/:storyId')
+    .get(authController.isAuthenticated, storyController.getStory)
+    .put(authController.isAuthenticated, storyController.updateStory)
+    .delete(authController.isAuthenticated, storyController.deleteStory);
 
   app.route('/users')
-    .get(authController.isAuthenticated, userCtrl.listAllUsers)
-    .post(userCtrl.createUser);
+    .get(authController.isAuthenticated, userController.listAllUsers)
+    .post(userController.createUser);
 
   app.route('/users/:userId')
-    .get(authController.isAuthenticated, userCtrl.getUser)
-    .put(authController.isAuthenticated, userCtrl.updateUser);
+    .get(authController.isAuthenticated, userController.getUser)
+    .put(authController.isAuthenticated, userController.updateUser);
 };

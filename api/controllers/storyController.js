@@ -61,7 +61,7 @@ exports.getStory = (req, res) => {
 };
 
 exports.updateStory = (req, res) => {
-    Story.findByIdAndUpdate(req.params.storyId, {body: req.body.body}, {new: true}, (err, story) => {
+    Story.findByIdAndUpdate({ _id: req.params.storyId, author: req.user._id }, {body: req.body.body}, {new: true}, (err, story) => {
         if(err) {
             res.send(err);
         }
@@ -70,7 +70,7 @@ exports.updateStory = (req, res) => {
 };
 
 exports.deleteStory = (req, res) => {
-    Story.remove({_id: req.params.storyId}, (err, story) => {
+    Story.remove({_id: req.params.storyId, author: req.user._id}, (err, story) => {
         if(err) {
             res.send(err);
         }
