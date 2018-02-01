@@ -4,29 +4,31 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
 exports.listAllUsers = (req, res) => {
-    User.find({}, (err, user) => {
-        if(err) {
-            res.send(err);
-        }
-        res.json(user);
-    });
+  User.find((err, users) => {
+    if(err) {
+      res.send(err);
+    }
+    res.json(users);
+  })
 };
 
 /* update this to work with passwords */
 exports.createUser = (req, res) => {
-    var newUser = new User({
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        profileImg: req.body.profileImg
-    });
+  var newUser = new User({
+    username: req.body.username,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    profileImg: req.body.profileImg
+  });
 
-    newUser.save((err, user) => {
-        if(err) {
-            res.send(err);
-        }
-        res.json(user);
-    });
+  newUser.save((err, user) => {
+    if(err) {
+      res.send(err);
+    }
+
+    res.json({ message: "New user created!" });
+  })
 };
 
 exports.getUser = (req, res) => {
@@ -39,15 +41,16 @@ exports.getUser = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-    User.findByIdAndUpdate(req.params.userId, {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        profileImg: req.body.profileImg
-    }, (err, user) => {
-        if(err) {
-            res.send(err);
-        }
-        res.json(user);
-    });
+  User.findByIdAndUpdate(req.params.userId, {
+    username: req.body.username,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    profileImg: req.body.profileImg
+  }, (err, user) => {
+    if(err) {
+      res.send(err);
+    }
+    res.json(user);
+  });
 };

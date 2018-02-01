@@ -1,23 +1,22 @@
 'use strict';
+module.exports = function(app, authController) {
+  var storyController = require('../controllers/storyController'),
+  userController = require('../controllers/userController');
 
-module.exports = function(app) {
-    var snipper = require('../controllers/storyController'),
-    userCtrl = require('../controllers/userController');
+  app.route('/snips')
+    .get(authController.isAuthenticated, snipper.listAllSnippets)
+    .post(authController.isAuthenticated, snipper.createSnippet);
 
-    app.route('/stories')
-        .get(snipper.listAllStories)
-        .post(snipper.createStory);
+  app.route('/snips/:snipId')
+    .get(authController.isAuthenticated, snipper.getSnippet)
+    .put(authController.isAuthenticated, snipper.updateSnippet)
+    .delete(authController.isAuthenticated, snipper.deleteSnippet);
 
-    app.route('/stories/:storyId')
-        .get(snipper.getStory)
-        .put(snipper.updateStory)
-        .delete(snipper.deleteStory);
+  app.route('/users')
+    .get(authController.isAuthenticated, userCtrl.listAllUsers)
+    .post(userCtrl.createUser);
 
-    app.route('/users')
-        .get(userCtrl.listAllUsers)
-        .post(userCtrl.createUser);
-
-    app.route('/users/:userId')
-        .get(userCtrl.getUser)
-        .put(userCtrl.updateUser);
+  app.route('/users/:userId')
+    .get(authController.isAuthenticated, userCtrl.getUser)
+    .put(authController.isAuthenticated, userCtrl.updateUser);
 };
