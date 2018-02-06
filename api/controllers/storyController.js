@@ -5,18 +5,20 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
 exports.listAllStories = (req, res) => {
-  Story.find({}, (err, story) => {
-    if(err) {
-      res.send(err);
-    }
-    res.json(story);
-  });
+    Story.find({}, (err, story) => {
+        if(err) {
+            console.log("Story: list all");
+            res.send(err);
+        }
+        res.json(story);
+    });
 };
 
 exports.createStory = (req, res) => {
+    //console.log(req.user._id)
     var newStory = new Story({
         body: req.body.body,
-        author: req.body.author,
+        author: req.user.username,
         parent: req.body.parent
     });
 
@@ -25,23 +27,27 @@ exports.createStory = (req, res) => {
             res.send(err);
         }
         /* Update the parent to include the snip in its children list */
-        Story.findByIdAndUpdate(
-            newStory.parent,
-            {$push: {'children': newStory._id}},
-            {safe: true, new : true},
-            function(err, story) {
-                if(err) {
-                    console.log('error: ' + err);
+        if (newStory.parent != "") {
+            Story.findByIdAndUpdate(
+                newStory.parent,
+                {$push: {'children': newStory._id}},
+                {safe: true, new : true},
+                function(err, story) {
+                    if(err) {
+                        console.log("Story: new story -- find story by id and update")
+                        console.log('error: ' + err);
+                    }
                 }
-            }
-        );
+            );
+        }
         /* Update the user to link to the new snippet */
         User.findByIdAndUpdate(
-            newStory.author,
+            req.user._id,
             {$push: {'stories': newStory._id}},
             {safe: true, new : true},
             function(err, user) {
                 if(err) {
+                    console.log("Story: new story -- find user by id and update");
                     console.log('error: ' + err);
                 }
             }
@@ -54,6 +60,7 @@ exports.createStory = (req, res) => {
 exports.getStory = (req, res) => {
     Story.findById(req.params.storyId, (err, story) => {
         if(err) {
+            console.log("Story: find by id");
             res.send(err);
         }
         res.json(story);
@@ -63,6 +70,7 @@ exports.getStory = (req, res) => {
 exports.updateStory = (req, res) => {
     Story.findByIdAndUpdate({ _id: req.params.storyId, author: req.user._id }, {body: req.body.body}, {new: true}, (err, story) => {
         if(err) {
+            console.log("Story: update");
             res.send(err);
         }
         res.json(story);
@@ -72,6 +80,7 @@ exports.updateStory = (req, res) => {
 exports.deleteStory = (req, res) => {
     Story.remove({_id: req.params.storyId, author: req.user._id}, (err, story) => {
         if(err) {
+            console.log("Story: delete");
             res.send(err);
         }
         res.json(story);
