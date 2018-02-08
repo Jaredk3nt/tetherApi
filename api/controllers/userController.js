@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    User = mongoose.model('User');
+    User = mongoose.model('User'),
+    utils = require('../utils');
 
 exports.listAllUsers = (req, res) => {
     User.find((err, users) => {
@@ -15,23 +16,56 @@ exports.listAllUsers = (req, res) => {
 
 /* update this to work with passwords */
 exports.createUser = (req, res) => {
-    var newUser = new User({
-        username: req.body.username,
-        password: req.body.password,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        profileImg: req.body.profileImg
-    });
-
-    newUser.save((err, user) => {
-        if(err) {
-            console.log("User: save")
-            res.send(err);
+    User.findOne({ username: req.body.username }, function (err, user) {
+        if (user == null) {
+            var newUser = new User({
+                username: req.body.username,
+                password: req.body.password,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                profileImg: req.body.profileImg
+            });
+        
+            newUser.save((err, user) => {
+                if(err) {
+                    res.send(err);
+                }
+        
+                res.json({ username: newUser.username, _id: newUser._id });
+            });
+        } else if (err) {
+            res.json({ code: 501, message: "Creating user failed." })
+        } else {
+            res.json({ code: 401, message: "Username already exists." });
         }
-
-        res.json({ message: "New user created!" });
     });
 };
+
+exports.login = (req, res) => {
+    User.findOne({ username: req.params.username }, function(err, user){
+        if (err) {
+            res.json({ code: 502, message: "Server error: failed to login." });
+        } else if(user == null) {
+            res.json({ code: 402, message: "Username or password incorrect." });
+        } else {
+            user.verifyPassword(req.params.password, function(err, response) {
+                if (err) {
+                    res.json({ code: 502, message: "Server error: failed to login." });
+                } else if (response == false) {
+                    res.json({ code: 402, message: "Username or password incorrect." });
+                } else { // User login is correct!
+                    var token = utils.rememberMeToken();
+                    User.findByIdAndUpdate(user._id, { "$push": { "tokens": token } }, (err, user) => {
+                        if (err) {
+                            res.send(err);
+                        }
+                        res.json({ code: 202, _id: user._id, username: req.params.username, token: token });
+                    });   
+                }
+            });
+        }
+    });
+}
 
 exports.getUser = (req, res) => {
     User.findById(req.params.userId, (err, user) => {

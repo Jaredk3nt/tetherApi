@@ -25,7 +25,12 @@ var UserSchema = new Schema({
         type: String,
         default: ''
     },
-    snippets: []
+    tokens : {
+        type: Array
+    },
+    stories: {
+        type: Array
+    }
 });
 
 //Before each save we want to verify an update to the password
@@ -50,6 +55,16 @@ UserSchema.pre('save', function(callback) {
         });
     });
 });
+
+UserSchema.methods.validateToken = function(token, callback) {
+    for (var t of this.tokens) {
+        if (token === t) {
+            callback(null, true);
+            return
+        }
+    }
+    return callback({ code: 403, message: "invalid token."}, false);
+}
 
 UserSchema.methods.verifyPassword = function(password, callback) {
     bcrypt.compare(password, this.password, function(err, isMatch) {
