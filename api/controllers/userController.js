@@ -20,6 +20,7 @@ exports.createUser = (req, res) => {
         if (user == null) {
             var newUser = new User({
                 username: req.body.username,
+                email: req.body.email,
                 password: req.body.password,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -28,13 +29,14 @@ exports.createUser = (req, res) => {
         
             newUser.save((err, user) => {
                 if(err) {
+                    console.log('saving user failed');
                     res.send(err);
                 }
         
                 res.json({ username: newUser.username, _id: newUser._id });
             });
         } else if (err) {
-            res.json({ code: 501, message: "Creating user failed." })
+            res.json({ code: 501, message: "Creating user failed." });
         } else {
             res.json({ code: 401, message: "Username already exists." });
         }
@@ -42,13 +44,13 @@ exports.createUser = (req, res) => {
 };
 
 exports.login = (req, res) => {
-    User.findOne({ username: req.params.username }, function(err, user){
+    User.findOne({ username: req.body.username }, function(err, user){
         if (err) {
             res.json({ code: 502, message: "Server error: failed to login." });
         } else if(user == null) {
             res.json({ code: 402, message: "Username or password incorrect." });
         } else {
-            user.verifyPassword(req.params.password, function(err, response) {
+            user.verifyPassword(req.body.password, function(err, response) {
                 if (err) {
                     res.json({ code: 502, message: "Server error: failed to login." });
                 } else if (response == false) {
@@ -59,7 +61,7 @@ exports.login = (req, res) => {
                         if (err) {
                             res.send(err);
                         }
-                        res.json({ code: 202, _id: user._id, username: req.params.username, token: token });
+                        res.json({ code: 202, _id: user._id, username: req.body.username, token: token });
                     });   
                 }
             });

@@ -20,6 +20,6 @@ module.exports = function(app, authController) {
         .get(authController.isAuthenticated, userController.getUser)
         .put(authController.isAuthenticated, userController.updateUser);
 
-    app.route('/login/:username&:password')
-        .get(userController.login)
+    app.route('/login')
+        .post(userController.login)
 };
