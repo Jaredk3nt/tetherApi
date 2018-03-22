@@ -1,9 +1,11 @@
 'use strict';
+var dotenv = require('dotenv');
+dotenv.config();
 
 var express = require('express'),
     app = express(),
     //cors = require('cors'),
-    port = process.env.PORT || 3000,
+    port = process.env.PORT,
     mongoose = require('mongoose'),
     Snippet = require('./api/models/storyModel'),
     User = require('./api/models/userModel'),
@@ -11,6 +13,8 @@ var express = require('express'),
     //passport = require('passport'),
     authController = require('./api/controllers/auth'),
     cookieParser = require('cookie-parser')
+
+
 
 mongoose.connect('mongodb://localhost/Tetherdb', {
     useMongoClient: true

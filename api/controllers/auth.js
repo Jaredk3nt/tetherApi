@@ -6,13 +6,13 @@ var User = require('../models/userModel');
 
 
 exports.generateJWT = (user) => {
-    var token = jwt.sign({ user: user }, 'shhhhh', { expiresIn: '1d'});
+    var token = jwt.sign({ user: user }, process.env.SECRET_KEY, { expiresIn: '1d'});
     return token;
 }
 
 var verifyJWT = (token) => {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, 'shhhhh', (err, decodedToken) => {
+        jwt.verify(token, process.env.SECRET_KEY, (err, decodedToken) => {
             if (err || !decodedToken) {
                 return reject(err);
             }
