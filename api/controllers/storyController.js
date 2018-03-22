@@ -15,9 +15,6 @@ exports.listAllStories = (req, res) => {
 };
 
 exports.createStory = (req, res) => {
-
-    console.log(req.user.user)
-
     var newStory = new Story({
         body: req.body.body,
         author: req.user.user.username,

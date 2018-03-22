@@ -23,8 +23,6 @@ var verifyJWT = (token) => {
 
 exports.authenticate = (req, res, next) => {
     token = req.cookies['auth_token']
-    console.log(token)
-
     verifyJWT(token)
         .then((decodedToken) => {
             console.log(decodedToken);
@@ -36,42 +34,3 @@ exports.authenticate = (req, res, next) => {
             res.status(401).json({message: 'invalid authentication'});
         });
 }
-
-passport.use(new BasicStrategy( (username, token, callback) => {
-    User.findOne({ username: username }, (err, user) => {
-        if (err) { 
-            return callback(err); 
-        }
-
-        if (!user) { 
-            return callback(null, false); 
-        }
-
-        user.validateToken(token, (err, isMatch)=> {
-            if (err) {
-                console.log("token validation error");
-                return callback(err);
-            } else if (!isMatch) {
-                return callback(null, false);
-            } else {
-                return callback(null, user);
-            }
-        });
-
-        // user.verifyPassword(password, (err, isMatch) => {
-        //     if (err) { 
-        //         return callback(err); 
-        //     }
-
-        //     // Password did not match
-        //     if (!isMatch) { 
-        //         return callback(null, false); 
-        //     }
-
-        //     // Success
-        //     return callback(null, user);
-        // });
-    });
-}));
-
-exports.isAuthenticated = passport.authenticate('basic', { session : true });

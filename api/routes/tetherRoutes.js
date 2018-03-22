@@ -7,7 +7,6 @@ module.exports = function(app, authController) {
         .get(storyController.listAllStories)
         .post(authController.authenticate, storyController.createStory);
 
-    
     app.route('/stories/:storyId')
         .get(storyController.getStory)
         .put(authController.authenticate, storyController.updateStory)

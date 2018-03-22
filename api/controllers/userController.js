@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    utils = require('../utils'),
     auth = require('./auth.js')
 
 exports.listAllUsers = (req, res) => {
@@ -61,13 +60,7 @@ exports.login = (req, res) => {
                     res.json({ code: 402, message: "Username or password incorrect." });
                 } else { // User login is correct!
                     res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}));
-                    res.json({ code: 202, _id: user._id, username: req.body.username});
-                    // User.findByIdAndUpdate(user._id, { "$push": { "tokens": token } }, (err, user) => {
-                    //     if (err) {
-                    //         res.send(err);
-                    //     }
-                        
-                    // });   
+                    res.json({ code: 202, _id: user._id, username: req.body.username}); 
                 }
             });
         }
