@@ -12,9 +12,10 @@ var express = require('express'),
     authController = require('./api/controllers/auth'),
     cookieParser = require('cookie-parser')
 
-mongoose.connect('mongodb://localhost/Tetherdb', {
+mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/Tetherdb', {
     useMongoClient: true
 });
+console.log('Database ready');
 mongoose.Promise = global.Promise;
 
 app.use(bodyParser.urlencoded({ extended: true }));
