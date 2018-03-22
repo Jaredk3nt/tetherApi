@@ -15,9 +15,10 @@ exports.listAllStories = (req, res) => {
 };
 
 exports.createStory = (req, res) => {
+    var user = req.user.user;
     var newStory = new Story({
         body: req.body.body,
-        author: req.user.user.username,
+        author: user.username,
         parent: req.body.parent
     });
 
@@ -41,7 +42,7 @@ exports.createStory = (req, res) => {
         }
         /* Update the user to link to the new snippet */
         User.findByIdAndUpdate(
-            req.user._id,
+            user.userid,
             {$push: {'stories': newStory._id}},
             {safe: true, new : true},
             function(err, user) {

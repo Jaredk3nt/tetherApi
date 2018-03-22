@@ -1,6 +1,3 @@
-var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
-
 var jwt = require('jsonwebtoken');
 var User = require('../models/userModel');
 
