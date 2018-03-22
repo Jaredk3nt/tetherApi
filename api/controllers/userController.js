@@ -2,7 +2,8 @@
 
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    utils = require('../utils');
+    utils = require('../utils'),
+    auth = require('./auth.js')
 
 exports.listAllUsers = (req, res) => {
     User.find((err, users) => {
@@ -31,8 +32,9 @@ exports.createUser = (req, res) => {
                 if(err) {
                     console.log('saving user failed');
                     res.send(err);
+                    return
                 }
-        
+                res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}));
                 res.json({ username: newUser.username, _id: newUser._id });
             });
         } else if (err) {
@@ -46,8 +48,10 @@ exports.createUser = (req, res) => {
 exports.login = (req, res) => {
     User.findOne({ username: req.body.username }, function(err, user){
         if (err) {
+            res.status(502)
             res.json({ code: 502, message: "Server error: failed to login." });
         } else if(user == null) {
+            res.status(402)
             res.json({ code: 402, message: "Username or password incorrect." });
         } else {
             user.verifyPassword(req.body.password, function(err, response) {
@@ -56,13 +60,14 @@ exports.login = (req, res) => {
                 } else if (response == false) {
                     res.json({ code: 402, message: "Username or password incorrect." });
                 } else { // User login is correct!
-                    var token = utils.rememberMeToken();
-                    User.findByIdAndUpdate(user._id, { "$push": { "tokens": token } }, (err, user) => {
-                        if (err) {
-                            res.send(err);
-                        }
-                        res.json({ code: 202, _id: user._id, username: req.body.username, token: token });
-                    });   
+                    res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}));
+                    res.json({ code: 202, _id: user._id, username: req.body.username});
+                    // User.findByIdAndUpdate(user._id, { "$push": { "tokens": token } }, (err, user) => {
+                    //     if (err) {
+                    //         res.send(err);
+                    //     }
+                        
+                    // });   
                 }
             });
         }

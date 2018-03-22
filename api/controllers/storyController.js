@@ -15,10 +15,12 @@ exports.listAllStories = (req, res) => {
 };
 
 exports.createStory = (req, res) => {
-    //console.log(req.user._id)
+
+    console.log(req.user.user)
+
     var newStory = new Story({
         body: req.body.body,
-        author: req.user.username,
+        author: req.user.user.username,
         parent: req.body.parent
     });
 

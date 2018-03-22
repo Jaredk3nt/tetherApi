@@ -5,20 +5,21 @@ module.exports = function(app, authController) {
 
     app.route('/stories')
         .get(storyController.listAllStories)
-        .post(authController.isAuthenticated, storyController.createStory);
+        .post(authController.authenticate, storyController.createStory);
 
+    
     app.route('/stories/:storyId')
-        .get(authController.isAuthenticated, storyController.getStory)
-        .put(authController.isAuthenticated, storyController.updateStory)
-        .delete(authController.isAuthenticated, storyController.deleteStory);
+        .get(storyController.getStory)
+        .put(authController.authenticate, storyController.updateStory)
+        .delete(authController.authenticate, storyController.deleteStory);
 
     app.route('/users')
-        .get(authController.isAuthenticated, userController.listAllUsers)
+        .get(authController.authenticate, userController.listAllUsers)
         .post(userController.createUser);
 
     app.route('/users/:userId')
-        .get(authController.isAuthenticated, userController.getUser)
-        .put(authController.isAuthenticated, userController.updateUser);
+        .get(authController.authenticate, userController.getUser)
+        .put(authController.authenticate, userController.updateUser);
 
     app.route('/login')
         .post(userController.login)
