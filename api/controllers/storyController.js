@@ -5,13 +5,22 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
 exports.listAllStories = (req, res) => {
-    Story.find({}, (err, story) => {
-        if(err) {
-            console.log("Story: list all");
-            res.send(err);
-        }
-        res.json(story);
-    });
+
+    var pageOptions = {
+        page: req.query.page || 0,
+        limit: req.query.limit || 50
+    }
+    
+    Story.find()
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .exec(function (err, doc) {
+            if(err) { 
+                res.status(500).json(err); 
+                return; 
+            };
+            res.status(200).json(doc);
+        });
 };
 
 exports.createStory = (req, res) => {
