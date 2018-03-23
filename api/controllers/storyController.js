@@ -87,6 +87,7 @@ exports.deleteStory = (req, res) => {
 
 
 exports.getStoryChildren = (req, res) => {
+    console.log(req.params.storyId)
     Story.findById(req.params.storyId, (err, story) => {
         if(err) {
             res.code(400)
@@ -101,12 +102,9 @@ exports.getStoryChildren = (req, res) => {
 
 async function getChildren(children) {
     let childList = []
-    for (let childId in children) {
+    for (let childId of children) {
         let child = await Story.findById(childId);
         childList.push(child)
-        // childPromise.then( (child) => {
-        //     childList.push(child)
-        // })
     }
     return childList;
 }
