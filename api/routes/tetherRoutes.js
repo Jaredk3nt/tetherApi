@@ -12,6 +12,9 @@ module.exports = function(app, authController) {
         .put(authController.authenticate, storyController.updateStory)
         .delete(authController.authenticate, storyController.deleteStory);
 
+    app.route('/storychildren/:storyId')
+        .get(storyController.getStoryChildren)
+
     app.route('/users')
         .get(authController.authenticate, userController.listAllUsers)
         .post(userController.createUser);

@@ -60,7 +60,6 @@ exports.createStory = (req, res) => {
 exports.getStory = (req, res) => {
     Story.findById(req.params.storyId, (err, story) => {
         if(err) {
-            console.log("Story: find by id");
             res.send(err);
         }
         res.json(story);
@@ -70,7 +69,6 @@ exports.getStory = (req, res) => {
 exports.updateStory = (req, res) => {
     Story.findByIdAndUpdate({ _id: req.params.storyId, author: req.user._id }, {body: req.body.body}, {new: true}, (err, story) => {
         if(err) {
-            console.log("Story: update");
             res.send(err);
         }
         res.json(story);
@@ -86,3 +84,29 @@ exports.deleteStory = (req, res) => {
         res.json(story);
     });
 };
+
+
+exports.getStoryChildren = (req, res) => {
+    Story.findById(req.params.storyId, (err, story) => {
+        if(err) {
+            res.code(400)
+                .json({ message: `story with id: ${req.params.storyId} could not be found`});
+
+        }
+        getChildren(story.children).then( (childlist) => {
+            res.send(childlist);
+        })
+    })
+}
+
+async function getChildren(children) {
+    let childList = []
+    for (let childId in children) {
+        let child = await Story.findById(childId);
+        childList.push(child)
+        // childPromise.then( (child) => {
+        //     childList.push(child)
+        // })
+    }
+    return childList;
+}
