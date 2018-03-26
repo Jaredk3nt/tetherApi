@@ -12,8 +12,11 @@ module.exports = function(app, authController) {
         .put(authController.authenticate, storyController.updateStory)
         .delete(authController.authenticate, storyController.deleteStory);
 
-    app.route('/storychildren/:storyId')
-        .get(storyController.getStoryChildren)
+    app.route('/children/:storyId')
+        .get(storyController.getStoryChildren);
+
+    app.route('/parents/:storyId')
+        .get(storyController.getFullParentStory);
 
     app.route('/users')
         .get(authController.authenticate, userController.listAllUsers)
@@ -24,5 +27,5 @@ module.exports = function(app, authController) {
         .put(authController.authenticate, userController.updateUser);
 
     app.route('/login')
-        .post(userController.login)
+        .post(userController.login);
 };

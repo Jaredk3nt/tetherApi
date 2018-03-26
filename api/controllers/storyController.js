@@ -96,7 +96,6 @@ exports.deleteStory = (req, res) => {
 
 
 exports.getStoryChildren = (req, res) => {
-    console.log(req.params.storyId)
     Story.findById(req.params.storyId, (err, story) => {
         if(err) {
             res.code(400)
@@ -106,7 +105,7 @@ exports.getStoryChildren = (req, res) => {
         getChildren(story.children).then( (childlist) => {
             res.send(childlist);
         })
-    })
+    });
 }
 
 async function getChildren(children) {
@@ -116,4 +115,27 @@ async function getChildren(children) {
         childList.push(child)
     }
     return childList;
+}
+
+exports.getFullParentStory = (req, res) => {
+    Story.findById(req.params.storyId)
+        .then( (story) => {
+            getParents(story).then( (parents) => {
+                res.send(parents)
+            });
+        })
+        .catch( (error) => {
+            res.code(500).json({ message: 'Server Error' })
+        });
+}
+
+async function getParents(story) {
+    let currentStory = story;
+    let parents = []
+    while( currentStory.parent.length > 0 ) {
+        let parent = await Story.findById(currentStory.parent);
+        parents.push(parent);
+        currentStory = parent;
+    }
+    return parents;
 }
