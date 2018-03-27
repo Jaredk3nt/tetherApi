@@ -33,7 +33,7 @@ exports.createUser = (req, res) => {
                     res.send(err);
                     return
                 }
-                res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}));
+                res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}), {path: '/'});
                 res.json({ username: newUser.username, _id: newUser._id });
             });
         } else if (err) {
@@ -59,7 +59,7 @@ exports.login = (req, res) => {
                 } else if (response == false) {
                     res.json({ code: 402, message: "Username or password incorrect." });
                 } else { // User login is correct!
-                    res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}));
+                    res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}), {path: '/'});
                     res.json({ code: 202, _id: user._id, username: req.body.username}); 
                 }
             });
