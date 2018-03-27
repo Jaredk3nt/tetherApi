@@ -34,6 +34,8 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use("/", serveStatic ( path.join (__dirname, '/dist') ) )
+
 var routes = require('./api/routes/tetherRoutes');
 routes(app, authController);
 
