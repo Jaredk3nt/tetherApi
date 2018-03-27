@@ -36,7 +36,7 @@ exports.createStory = (req, res) => {
             res.send(err);
         }
         /* Update the parent to include the snip in its children list */
-        if (newStory.parent != "") {
+        if (newStory.parent !== "") {
             Story.findByIdAndUpdate(
                 newStory.parent,
                 {$push: {'children': newStory._id}},
@@ -131,11 +131,11 @@ exports.getFullParentStory = (req, res) => {
 
 async function getParents(story) {
     let currentStory = story;
-    let parents = []
+    let parents = [currentStory]
     while( currentStory.parent.length > 0 ) {
         let parent = await Story.findById(currentStory.parent);
         parents.push(parent);
         currentStory = parent;
     }
-    return parents;
+    return parents.reverse();
 }
