@@ -28,9 +28,4 @@ module.exports = function(app, authController) {
 
     app.route('/api/login')
         .post(userController.login);
-
-    app.route('*')
-        .get('*', function (req, res) {
-            res.sendFile(__dirname + '/dist/index.html')
-        })
 };

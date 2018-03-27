@@ -10,7 +10,9 @@ var express = require('express'),
     User = require('./api/models/userModel'),
     bodyParser = require('body-parser'),
     authController = require('./api/controllers/auth'),
-    cookieParser = require('cookie-parser')
+    cookieParser = require('cookie-parser'),
+    serveStatic = require('serve-static'),
+    path = require('path')
 
 mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/Tetherdb', {
     useMongoClient: true
@@ -23,7 +25,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(function(req, res, next) {
-    var allowedOrigins = ['http://127.0.0.1:8080', 'http://localhost:8080'];
+    var allowedOrigins = ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000'];
     var origin = req.headers.origin;
     if(allowedOrigins.indexOf(origin) > -1){
        res.header('Access-Control-Allow-Origin', origin);
@@ -38,6 +40,11 @@ app.use("/", serveStatic ( path.join (__dirname, '/dist') ) )
 
 var routes = require('./api/routes/tetherRoutes');
 routes(app, authController);
+
+app.route('*')
+    .get((req, res) => {
+        res.sendFile(__dirname + '/dist/index.html')
+    })
 
 app.listen(port);
 
