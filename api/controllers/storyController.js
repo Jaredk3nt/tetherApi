@@ -157,7 +157,7 @@ exports.likeStory = (req, res) => {
                 story.likeUsers.splice(index, 1)
                 story.likes--;
                 story.save();
-                res.json({likes: story.likes})
+                res.json({likes: story.likes});
             }
         })
         .catch( (error) => {

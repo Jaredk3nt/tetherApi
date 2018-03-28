@@ -7,7 +7,10 @@ module.exports = function(app, authController) {
         .get(storyController.listAllStories)
         .post(authController.authenticate, storyController.createStory);
 
-    app.route('/stories/:storyId')
+    app.route('/stories/:userId')
+        .get(userController.getUsersStories);
+
+    app.route('/story/:storyId')
         .get(storyController.getStory)
         .put(authController.authenticate, storyController.updateStory)
         .delete(authController.authenticate, storyController.deleteStory);
@@ -22,7 +25,7 @@ module.exports = function(app, authController) {
         .get(authController.authenticate, userController.listAllUsers)
         .post(userController.createUser);
 
-    app.route('/users/:userId')
+    app.route('/user/:userId')
         .get(authController.authenticate, userController.getUser)
         .put(authController.authenticate, userController.updateUser);
 

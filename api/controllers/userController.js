@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
+    Story = mongoose.model('Story'),
     auth = require('./auth.js')
 
 exports.listAllUsers = (req, res) => {
@@ -72,7 +73,14 @@ exports.getUser = (req, res) => {
         if(err) {
             res.send(err);
         }
-        res.json(user);
+        getStories(user.stories)
+            .then( stories => {
+                user.stories = stories;
+                res.send(user);
+            })
+            .catch( err => {
+                res.status(500).json({message: err});
+            })
     });
 };
 
@@ -91,3 +99,28 @@ exports.updateUser = (req, res) => {
         res.json(user);
     });
 };
+
+exports.getUsersStories = (req, res) => {
+    User.findById(req.params.userId)
+        .then( user => {
+            getStories(user.stories)
+                .then( stories => {
+                    res.send(stories);
+                })
+                .catch( err => {
+                    res.status(500).json({message: err});
+                })
+        })
+        .catch( err => {
+            res.status(400).json({message: err});
+        })
+}
+
+async function getStories(stories) {
+    let storyList = [];
+    for (let storyId of stories) {
+        let story = await Story.findById(storyId);
+        storyList.push(story);
+    }
+    return storyList;
+}
