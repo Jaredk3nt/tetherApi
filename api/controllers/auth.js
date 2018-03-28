@@ -22,7 +22,6 @@ exports.authenticate = (req, res, next) => {
     token = req.cookies['auth_token']
     verifyJWT(token)
         .then((decodedToken) => {
-            console.log(decodedToken);
             req.user = decodedToken;
             next();
         })        
@@ -30,4 +29,20 @@ exports.authenticate = (req, res, next) => {
             console.log(err)
             res.status(401).json({message: 'invalid authentication'});
         });
+}
+
+exports.checkLogin = (req, res) => {
+    token = req.cookies['auth_token'];
+    if(token) {
+        verifyJWT(token)
+            .then((decodedToken) => {
+                console.log(decodedToken)
+                res.status(200).json({userid: decodedToken.user.userid, username: decodedToken.user.username})
+            })
+            .catch( (err) => {
+                res.status(500).json({message: err});
+            })
+    } else {
+        res.status(400).json({message: 'client not logged in'});
+    }
 }

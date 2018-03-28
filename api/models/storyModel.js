@@ -11,6 +11,10 @@ var StorySchema = new Schema({
         type: Number,
         default: 0
     },
+    likeUsers: {
+        type: Array,
+        default: []
+    },
     author: {
         type: String,
         required: true

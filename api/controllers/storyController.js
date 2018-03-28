@@ -139,3 +139,28 @@ async function getParents(story) {
     }
     return parents.reverse();
 }
+
+// Likes story if the user hasn't previously or unlikes it if they already have
+exports.likeStory = (req, res) => {
+    Story.findById(req.params.storyId)
+        .then( (story) => {
+            let index = story.likeUsers.indexOf(req.user.userid);
+            console.log('story index: ' + index);
+            if(index == -1) {
+                //like the story
+                story.likeUsers.push(req.user.userid);
+                story.likes++;
+                story.save();
+                res.json({likes: story.likes});
+            } else {
+                story.likeUsers.splice(index, 1)
+                story.likes--;
+                story.save();
+                res.json({likes: story.likes})
+            }
+        })
+        .catch( (error) => {
+            console.log(error);
+            res.status(500).json({message: error});
+        })
+}

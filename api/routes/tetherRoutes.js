@@ -27,5 +27,9 @@ module.exports = function(app, authController) {
         .put(authController.authenticate, userController.updateUser);
 
     app.route('/login')
+        .get(authController.checkLogin)
         .post(userController.login);
+
+    app.route('/like/:storyId')
+        .post(authController.authenticate, storyController.likeStory);
 };
