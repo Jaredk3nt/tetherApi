@@ -19,6 +19,10 @@ var StorySchema = new Schema({
         type: String,
         required: true
     },
+    authorId: {
+        type: String,
+        required: true
+    },
     parent: {
         type: String,
         default: ''

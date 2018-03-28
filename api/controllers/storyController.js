@@ -15,8 +15,8 @@ exports.listAllStories = (req, res) => {
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit)
         .exec(function (err, doc) {
-            if(err) { 
-                res.status(500).json(err); 
+            if (err) { 
+                res.status(500).json(err);
                 return; 
             };
             res.status(200).json(doc);
@@ -28,11 +28,12 @@ exports.createStory = (req, res) => {
     var newStory = new Story({
         body: req.body.body,
         author: user.username,
+        authorId: user.userid,
         parent: req.body.parent
     });
 
     newStory.save((err, story) => {
-        if(err) {
+        if (err) {
             res.send(err);
         }
         /* Update the parent to include the snip in its children list */
@@ -42,7 +43,7 @@ exports.createStory = (req, res) => {
                 {$push: {'children': newStory._id}},
                 {safe: true, new : true},
                 function(err, story) {
-                    if(err) {
+                    if (err) {
                         console.log("Story: new story -- find story by id and update")
                         console.log('error: ' + err);
                     }
@@ -55,7 +56,7 @@ exports.createStory = (req, res) => {
             {$push: {'stories': newStory._id}},
             {safe: true, new : true},
             function(err, user) {
-                if(err) {
+                if (err) {
                     console.log("Story: new story -- find user by id and update");
                     console.log('error: ' + err);
                 }
@@ -68,7 +69,7 @@ exports.createStory = (req, res) => {
 
 exports.getStory = (req, res) => {
     Story.findById(req.params.storyId, (err, story) => {
-        if(err) {
+        if (err) {
             res.send(err);
         }
         res.json(story);
@@ -77,7 +78,7 @@ exports.getStory = (req, res) => {
 
 exports.updateStory = (req, res) => {
     Story.findByIdAndUpdate({ _id: req.params.storyId, author: req.user._id }, {body: req.body.body}, {new: true}, (err, story) => {
-        if(err) {
+        if (err) {
             res.send(err);
         }
         res.json(story);
@@ -86,7 +87,7 @@ exports.updateStory = (req, res) => {
 
 exports.deleteStory = (req, res) => {
     Story.remove({_id: req.params.storyId, author: req.user._id}, (err, story) => {
-        if(err) {
+        if (err) {
             console.log("Story: delete");
             res.send(err);
         }
