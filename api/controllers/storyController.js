@@ -144,11 +144,12 @@ async function getParents(story) {
 exports.likeStory = (req, res) => {
     Story.findById(req.params.storyId)
         .then( (story) => {
-            let index = story.likeUsers.indexOf(req.user.userid);
+            let index = story.likeUsers.indexOf(req.user.user.userid);
             console.log('story index: ' + index);
             if(index == -1) {
                 //like the story
-                story.likeUsers.push(req.user.userid);
+                story.likeUsers.push(req.user.user.userid);
+                console.log(req.user.user);
                 story.likes++;
                 story.save();
                 res.json({likes: story.likes});
