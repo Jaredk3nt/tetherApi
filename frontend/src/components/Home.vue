@@ -4,6 +4,7 @@
     <div class="homepage">
         <div class="story-list">
             <story v-for="story in stories" v-bind:key="story._id" :story="story"/>
+            <div class="load-button-wrapper" v-if="showButton"><button class="load-button" @click="nextPage" >Load More</button></div>
         </div>
     </div>
 </div>
@@ -17,18 +18,30 @@ export default {
     name: 'Home',
     data () {
         return {
-            stories: []
+            stories: [],
+            currentPage: 0
         }
     },
     methods: {
         fetchStories: function() {
-            this.$http.get( this.$api + 'stories')
+            this.$http.get( this.$api + 'stories', {params: {page: this.currentPage}})
                 .then( response => {
-                    this.stories = response.body;
+                    this.stories = this.stories.concat(response.body);
                 }, error => {
-                    //error
                     console.log("on no error");
                 });
+        },
+        nextPage: function() {
+            this.currentPage++;
+            this.fetchStories();
+        }
+    },
+    computed: {
+        showButton: function(){
+            if (this.stories.length > 50) {
+                return true;
+            }
+            return false;
         }
     },
     mounted() {
@@ -55,6 +68,19 @@ export default {
                 width: $desktop-card-width;
             }
             
+            .load-button-wrapper {
+                width: 100%;
+                text-align: center;
+
+                .load-button {
+                    background-color: $white;
+                    color: $accent-green;
+                    border: none;
+                    padding: 1em 2em;
+                    font-weight: 700;
+                    margin: 2em 0em 4em;
+                }
+            }
         }
     }
 </style>
