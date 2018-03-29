@@ -1,7 +1,9 @@
 <template>
     <div class="outer-container">
         <div class="inner-container">
-            <toolbar/>
+            <div class="task-bar">
+                <toolbar/>
+            </div>
             <div class="story-card-container">
                 <story :story="this.story"/>
             </div>
@@ -77,14 +79,25 @@ export default {
         flex-direction: column;
         align-items: center;
 
+        @include desktop {
+            margin-top: 1em;
+        }
+
         .task-bar {
             height: 2em;
             width: 100%;
             background-color: $accent-grey;
+
+            @include desktop {
+                width: 50%;
+            }
         }
         .story-card-container {
             width: 100%;
 
+            @include desktop {
+                width: 50%;
+            }
             .card-container {
                 margin: 0em;
             }

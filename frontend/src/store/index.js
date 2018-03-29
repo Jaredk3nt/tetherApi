@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 //const debug = process.env.NODE_ENV !== 'production';
-const api = process.env.NODE_ENV === 'production' ? '/api/' : 'https://tetherapi.herokuapp.com/';
+const api = process.env.NODE_ENV === 'production' ? '/api/' : 'https://tetheredapp.herokuapp.com/api/';
 
 const state = {
     isLoggedIn: false,

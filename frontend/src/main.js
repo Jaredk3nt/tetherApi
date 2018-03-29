@@ -13,7 +13,7 @@ Vue.http.options.credentials = true;
 Vue.use(VueCookie);
 Vue.config.productionTip = false;
 
-Vue.prototype.$api = process.env.NODE_ENV === 'production' ? '/api/' : 'https://tetherapi.herokuapp.com/';
+Vue.prototype.$api = process.env.NODE_ENV === 'production' ? '/api/' : 'https://tetheredapp.herokuapp.com/api/';
 Vue.prototype.$char_limit = 600;
 /* eslint-disable no-new */
 new Vue({

@@ -27,11 +27,15 @@ export default {
 <style lang="scss">
 @import './styles/styles.scss';
 
+body {
+    height: 100%;
+}
+
 #app {
     font-family: $sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    height: 100%;
+    height: 100vh;
     box-sizing: border-box;
 
     display: grid;
