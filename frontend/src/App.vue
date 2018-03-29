@@ -37,6 +37,7 @@ export default {
 
 body {
     height: 100%;
+    width: 100%;
 }
 
 #app {
@@ -45,10 +46,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     height: 100vh;
     box-sizing: border-box;
-
     display: grid;
     grid-template-rows: 1fr $nav-height; 
-    height: 100%;
     box-sizing: border-box;
 
     @include desktop {
