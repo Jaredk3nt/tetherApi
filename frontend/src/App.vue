@@ -1,7 +1,8 @@
 <template>
     <div id="app">
+        <post v-if="postOpen" :parent="parent"/>
         <div class="page-body">
-            <keep-alive include="Home">
+            <keep-alive include="Home, story-view">
                 <router-view/>
             </keep-alive>
         </div>
@@ -11,11 +12,18 @@
 
 <script>
 import NavBar from '@/components/organisms/NavBar.vue';
+import Post from '@/components/organisms/Post.vue';
 
 export default {
     name: 'App',
-    components: { NavBar },
+    components: { NavBar, Post },
     computed: {
+        postOpen: function() {
+            return this.$store.getters.writing;
+        },
+        parent: function() {
+            return this.$store.getters.currentParent;
+        }
     },
     mounted: function() {
         console.log(process.env.NODE_ENV);

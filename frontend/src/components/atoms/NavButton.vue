@@ -33,8 +33,8 @@ export default {
 
     .title {
         color: $font-color;
-        font-size: 1.25rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: 600;
 
         &:hover {
             color: $font-hover-color;

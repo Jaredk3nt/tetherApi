@@ -15,9 +15,9 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      children: [
-        { path: '/write', component: Post, name: 'write', props: true },
-      ]
+      // children: [
+      //   { path: '/write', component: Post, name: 'write', props: true },
+      // ]
     },
     {
       path: '/login',

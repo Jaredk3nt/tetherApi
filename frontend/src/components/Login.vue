@@ -90,12 +90,12 @@ export default {
 
         h1 {
             margin-top: 4em;
-            
+
             @include desktop {
                 font-size: 3rem;
                 margin-top: 0em;
                 margin-bottom: .5em;
-                margin-top: 5em;
+                margin-top: 2.5em;
             }
         }
 
@@ -128,7 +128,7 @@ export default {
                 border-top: none; border-left: none; border-right: none;
 
                 @include desktop {
-                    font-size: 1.2rem;
+                    font-size: 1rem;
                     padding: .25em 1.5em;
                     height: $login-input-height-desktop;
                 }
@@ -149,7 +149,7 @@ export default {
 
                 @include desktop {
                     font-size: 1.25rem;
-                    height: calc(#{$login-input-height-desktop} - .5em);
+                    height: calc(#{$login-input-height-desktop} - .75em);
                 }
             }
         }

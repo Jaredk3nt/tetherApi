@@ -44,7 +44,7 @@ export default {
         }
     },
     mounted: function() {
-        if(parent !== undefined && parent !== '') {
+        if(this.parent !== undefined && this.parent !== '') {
             this.fetchParent();
         }
     },
@@ -55,12 +55,11 @@ export default {
                 this.showError();
             } else {
                 this.$store.dispatch('post', {story: this.story, parent: this.parent});
-                this.$router.back();
             }
             
         },
         backButton: function() {
-            this.$router.back()
+            this.$store.commit('stop_writing');
         },
         toggleParent: function() {
             this.parentOpen = !this.parentOpen;
@@ -102,7 +101,7 @@ $min-textarea-height-desktop: 6em;
 $back-button-width: 22%;
 $back-button-width-desktop: 18%;
 
-$d-height: 60%;
+$d-height: 70%;
 $d-width: 50%;
 
 .desktop-container {
@@ -174,10 +173,11 @@ $d-width: 50%;
         background-color: $white;
         box-sizing: border-box;
         display: grid;
+        background-color: $accent-grey;
         // position: absolute;
         z-index: 9999;
         grid-template-columns: $back-button-width 1fr $back-button-width;
-        border-bottom: 2px solid $accent-grey;
+        //border-bottom: 2px solid $accent-grey;
 
         @include desktop {
             grid-template-columns: $back-button-width-desktop 1fr $back-button-width-desktop;
@@ -200,6 +200,8 @@ $d-width: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: $white;
+            border-bottom: 2px solid $accent-grey;
 
             &:hover {
                 cursor: pointer;
@@ -220,6 +222,7 @@ $d-width: 50%;
             justify-content: center;
             background-color: $accent-grey;
             color: #666;
+            border-left: 2px solid $white;
 
             &:hover {
                 cursor: pointer;
@@ -260,6 +263,7 @@ $d-width: 50%;
             z-index: 999;
             padding: 1em;
             box-sizing: border-box;
+            
 
             textarea {
                 width: 100%;
@@ -269,6 +273,7 @@ $d-width: 50%;
                 resize: none;
                 font-family: $serif;
                 font-size: 1rem;
+                line-height: 1.2;
 
                 @include desktop {
                     font-size: 1.2rem;

@@ -9,6 +9,8 @@ const api = process.env.NODE_ENV === 'production' ? '/api/' : 'https://tethereda
 const state = {
     isLoggedIn: false,
     userid: "",
+    writing: false,
+    currentParent: ""
 }
 
 const getters = {
@@ -20,13 +22,16 @@ const getters = {
     },
     user: state => {
         return state.userid;
+    },
+    writing: state => {
+        return state.writing;
+    },
+    currentParent: state => {
+        return state.currentParent;
     }
 }
 
 const mutations = {
-    POST (state) {
-        state.isWriting = false;
-    },
     LOGIN (state) {
         state.pending = true;
     },
@@ -43,6 +48,18 @@ const mutations = {
     },
     LOGOUT (state) {
         state.isLoggedIn = false;
+    },
+    start_writing (state, parent) {
+        
+        state.writing = true;
+        if(parent) {
+            console.log(parent);
+            state.currentParent = parent;
+        }
+    },
+    stop_writing (state) {
+        state.writing = false;
+        state.currentParent = ''
     }
 }
 
@@ -53,7 +70,7 @@ const actions = {
         return new Promise( (resolve, reject) => {
             Vue.http.post( api + 'stories', { body: story_obj.story, parent: story_obj.parent }).then( response => {
                 console.log("posted: " + story_obj.story)
-                commit('POST');
+                commit('stop_writing');
                 resolve();
             }, error => {
                 //error

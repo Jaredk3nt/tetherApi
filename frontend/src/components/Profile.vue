@@ -1,5 +1,6 @@
 <template>
 <div class="profile-container">
+    <router-view/>
     <div class="profile-card-container">
         <div class="profile-header">
             <h1>{{user.username}}</h1>
@@ -30,12 +31,12 @@ export default {
     },
     mounted: function() {
         this.$http.get(this.$api + 'user/' + this.userId)
-                .then( res => {
-                    this.user = res.body;
-                })
-                .catch( err => {
-                    console.log(err);
-                })
+            .then( res => {
+                this.user = res.body;
+            })
+            .catch( err => {
+                console.log(err);
+            })
     },
     computed: {
         likes: function() {

@@ -5,7 +5,9 @@
                 <toolbar/>
             </div>
             <div class="story-card-container">
-                <story :story="this.story"/>
+                <keep-alive>
+                    <story :story="this.story"/>
+                </keep-alive>
             </div>
             <div class="children-container">
                 <story v-for="child in children" v-bind:key="child._id" :story="child"/>
@@ -35,17 +37,17 @@ export default {
     },
     beforeRouteUpdate (to, from, next) {
         this.children = [];
-        if(to.params.story === undefined) {
-            this.getStory(to.params.story_id);
-        }
-        this.children = this.story.children.map( x => {})
+        // if(to.params.story === undefined) {
+        //     this.getStory(to.params.story_id);
+        // }
+        //this.children = this.story.children.map( x => {})
         this.getChildren(to.params.story_id);
         next();
     },
     methods: {
         getStory: function(id) {
             this.$http.get( this.$api + 'story/' + id).then( response => {
-                this.story = response.body
+                //this.story = response.body
             }, error => {
                 //error
                 console.log(error);

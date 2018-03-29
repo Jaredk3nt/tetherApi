@@ -3,7 +3,7 @@
         <router-link class="nav-title" :to="{name: 'Home'}">tethered</router-link>
         <div class="nav-actions">
             <nav-button title="Read" route="Home" class="no-desktop"/>
-            <nav-button title="Write" route="write"></nav-button>
+            <nav-button title="Write" @clicked="startWriting"></nav-button>
             <nav-button title="Profile" v-if="isLoggedIn" @clicked="goToProfile"/>
             <nav-button title="Login" @clicked="login" v-else/>
         </div>
@@ -33,6 +33,9 @@ export default {
         },
         goToProfile: function() {
             this.$router.push('/' + this.$store.getters.user);
+        },
+        startWriting: function() {
+            this.$store.commit('start_writing');
         }
     }
 }
@@ -68,7 +71,7 @@ export default {
 
     .nav-title {
         display: none;
-        font-size: 2.2rem;
+        font-size: 2rem;
         font-weight: 600;
         color: $accent-green;
         text-decoration: none;

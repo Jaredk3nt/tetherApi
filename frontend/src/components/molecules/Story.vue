@@ -21,6 +21,7 @@ export default {
         liked: function() {
             if(this.story !== undefined) {
                 let index = this.story.likeUsers.indexOf(this.$store.getters.user);
+                console.log(index)
                 if(index > -1) {
                     return true;
                 }
@@ -35,12 +36,12 @@ export default {
             this.$router.push({ name: 'Story', params: { user: this.story.author, story_id: this.story._id, story: this.story}})
         },
         spawnChild: function() {
-            this.$router.push({ name: 'write', params: { parent: this.story._id }})
+            this.$store.commit('start_writing', this.story._id)
         },
         likeStory: function() {
             this.$http.post(this.$api + 'like/' + this.story._id)
                 .then( res => {
-                    this.liked = !this.liked;
+                    //this.liked = !this.liked;
                     this.story.likes = res.body.likes
                 })
                 .catch( err => {
@@ -78,6 +79,7 @@ $card-side-padding-desktop: 2em;
     .author {
         font-size: .85rem;
         color: $light-font;
+        font-weight: 600;
 
         @include desktop {
             &:hover {
@@ -109,7 +111,7 @@ $card-side-padding-desktop: 2em;
     background: $white;
 
     @include desktop {
-        padding: .75em $card-side-padding-desktop;
+        padding: .5em $card-side-padding-desktop;
         grid-template-columns: 6fr 1fr 1fr;
     }
 
@@ -125,12 +127,12 @@ $card-side-padding-desktop: 2em;
 
         p {
             display: inline-block;
-            margin: 0px 10px 0px 10px;
+            margin: 0px 15px 0px 15px;
             font-weight: 500;
             font-size: .85em;
 
             @include desktop {
-                font-size: 1em;
+                font-size: .9em;
             }
         }
     }
