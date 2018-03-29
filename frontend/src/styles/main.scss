@@ -1,0 +1,28 @@
+@import './globals.scss';
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+body {
+    background-color: $background;
+    margin: 0px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 2rem;
+    color: $font-color;
+}
+
+textarea:focus, input:focus {
+  outline: none;
+}
+
+p {
+  line-height: 1.2;
+}
+

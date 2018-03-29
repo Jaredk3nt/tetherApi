@@ -1,0 +1,2 @@
+Profile needs to be able to check if a valid user exists, and then display either the proper profile or an error page,
+Also want to control personal profile vs outward facing profile page. Should they be separate or have a flag that checks for the state stored user id to change page?

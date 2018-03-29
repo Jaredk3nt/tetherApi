@@ -3,14 +3,19 @@ var dotenv = require('dotenv');
 dotenv.config();
 
 var express = require('express'),
-    app = express(),
-    port = process.env.PORT,
+    cookieParser = require('cookie-parser'),
+    serveStatic = require('serve-static'),
+    path = require('path'),
+    bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
+    //Tether files
     Snippet = require('./api/models/storyModel'),
     User = require('./api/models/userModel'),
-    bodyParser = require('body-parser'),
-    authController = require('./api/controllers/auth'),
-    cookieParser = require('cookie-parser')
+    authController = require('./api/controllers/auth')
+    
+
+var port = process.env.PORT;
+var app = express();
 
 mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/Tetherdb', {
     useMongoClient: true
@@ -34,8 +39,15 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use("/", serveStatic ( path.join (__dirname, '/frontend/dist') ) )
+
 var routes = require('./api/routes/tetherRoutes');
 routes(app, authController);
+
+app.route('*')
+    .get((req, res) => {
+        res.sendFile(__dirname + '/frontend/dist/index.html')
+    })
 
 app.listen(port);
 

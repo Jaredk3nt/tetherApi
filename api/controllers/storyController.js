@@ -25,6 +25,9 @@ exports.listAllStories = (req, res) => {
 
 exports.createStory = (req, res) => {
     var user = req.user.user;
+    if (req.body.body === '' || req.body.body.length > 600) {
+        res.code(400).json({message: 'story is invalid and therefore cannot be posted'});
+    }
     var newStory = new Story({
         body: req.body.body,
         author: user.username,
