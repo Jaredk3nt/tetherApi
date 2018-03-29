@@ -1,12 +1,12 @@
 <template>
-    <div id="app">
+    <div id="app" :class="{'nav-hidden': !showNav}">
         <post v-if="postOpen" :parent="parent"/>
-        <div class="page-body">
+        <div class="page-body" >
             <keep-alive include="Home, story-view">
                 <router-view/>
             </keep-alive>
         </div>
-        <nav-bar/>
+        <nav-bar v-if="showNav"/>
     </div>
 </template>
 
@@ -23,6 +23,12 @@ export default {
         },
         parent: function() {
             return this.$store.getters.currentParent;
+        },
+        showNav: function() {
+            if(this.$route.path === '/login') {
+                return false;
+            }
+            return true;
         }
     },
     mounted: function() {
@@ -50,13 +56,24 @@ body {
     grid-template-rows: 1fr $nav-height; 
     box-sizing: border-box;
 
+    &.nav-hidden {
+        grid-template-rows: 1fr;
+    }
+
     @include desktop {
         grid-template-rows: $nav-height-desktop 1fr;
+
+        &.nav-hidden {
+            .page-body {
+                grid-row-start: 1;
+            }
+        }
     }
 
     .page-body {
         grid-row-start: 1;
         overflow: scroll;
+
         @include desktop {
             grid-row-start: 2;
         }

@@ -1,5 +1,5 @@
 <template>
-    <div class="nav-container" :class="{hidden: loginRoute}">
+    <div class="nav-container" :class="{'hidden': $store.getters.writing}">
         <router-link class="nav-title" :to="{name: 'Home'}">tethered</router-link>
         <div class="nav-actions">
             <nav-button title="Read" route="Home" class="no-desktop"/>
@@ -19,12 +19,6 @@ export default {
     computed: {
         isLoggedIn: function() {
             return this.$store.getters.isLoggedIn;
-        },
-        loginRoute: function() {
-            if(this.$route.path === '/login') {
-                return true;
-            }
-            return false;
         }
     },
     methods: {
@@ -67,6 +61,10 @@ export default {
         box-shadow: none;
         border-bottom: 1px solid $accent-grey;
         padding-left: calc(#{$desktop-margin} + 2em); 
+
+        &.hidden {
+            display: flex;
+        }
     }
 
     .nav-title {
