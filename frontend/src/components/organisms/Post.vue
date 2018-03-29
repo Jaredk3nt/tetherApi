@@ -17,7 +17,7 @@
         </div>
         <div class="post-container">
             <div class="text-container">
-                <textarea max-length="600" placeholder="Write a story!" v-model="story" @keydown="onKeyDown"></textarea>
+                <textarea max-length="600" placeholder="Write a story!" v-model="story" @keydown="onKeyDown" autofocus></textarea>
             </div>
             <div class="bottom-bar">
                 <p>{{story.length}} / 600</p>

@@ -5,9 +5,7 @@
                 <toolbar/>
             </div>
             <div class="story-card-container">
-                <keep-alive>
-                    <story :story="this.story"/>
-                </keep-alive>
+                <story :story="this.story"/>
             </div>
             <div class="children-container">
                 <story v-for="child in children" v-bind:key="child._id" :story="child"/>
