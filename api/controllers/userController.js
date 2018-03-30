@@ -73,7 +73,8 @@ exports.getUser = (req, res) => {
         if(err) {
             res.send(err);
         }
-        getStories(user.stories)
+        if(user) {
+            getStories(user.stories)
             .then( stories => {
                 user.stories = stories;
                 res.send(user);
@@ -81,6 +82,7 @@ exports.getUser = (req, res) => {
             .catch( err => {
                 res.status(500).json({message: err});
             })
+        }
     });
 };
 

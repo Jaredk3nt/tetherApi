@@ -1,7 +1,7 @@
 <template>
     <div class="card-container">
         <div class="story-container" @click="goToStory">
-            <div class="author" @click.stop="authorProfile" >{{story.author ? story.author : ' '}}</div>
+            <div class="author"><p @click.stop="authorProfile">{{story.author ? story.author : ' '}}</p></div>
             <p>{{story.body ? story.body : ' '}}</p>
         </div>
         <div class="story-actions">
@@ -81,18 +81,22 @@ $card-side-padding-desktop: 2em;
     }
 
     .author {
-        font-size: .85rem;
-        color: $light-font;
-        font-weight: 600;
-        padding: .5em 0em 0em;
-
-        &:hover {
-            text-decoration: underline;
-        }
 
         @include desktop {
             &:hover {
                 cursor: pointer;
+            }
+        }
+
+        p {
+            display: inline;
+            font-size: .85rem;
+            color: $light-font;
+            font-weight: 600;
+            font-family: $sans-serif;
+
+            &:hover {
+                text-decoration: underline;
             }
         }
     }
@@ -104,9 +108,11 @@ $card-side-padding-desktop: 2em;
         font-family: $serif;
         font-weight: 500;
         margin: .4em 0em;
+        padding: .5em .5em .5em 0em;
 
         @include desktop {
             font-size: $story-text-size-desktop;
+            padding: 0em;
         }
     }
 }

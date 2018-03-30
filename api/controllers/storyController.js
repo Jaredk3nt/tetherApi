@@ -12,6 +12,7 @@ exports.listAllStories = (req, res) => {
     }
     
     Story.find()
+        .sort({Created_date: -1})
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit)
         .exec(function (err, doc) {
@@ -27,6 +28,7 @@ exports.createStory = (req, res) => {
     var user = req.user.user;
     if (req.body.body === '' || req.body.body.length > 600) {
         res.code(400).json({message: 'story is invalid and therefore cannot be posted'});
+        return;
     }
     var newStory = new Story({
         body: req.body.body,
@@ -38,13 +40,19 @@ exports.createStory = (req, res) => {
     newStory.save((err, story) => {
         if (err) {
             res.send(err);
+            return;
         }
         /* Update the parent to include the snip in its children list */
         if (newStory.parent !== "") {
             Story.findByIdAndUpdate(
                 newStory.parent,
-                {$push: {'children': newStory._id}},
-                {safe: true, new : true},
+                { $push: { 
+                    'children': { 
+                        $each: [ newStory._id ], 
+                        $position: 0 }
+                    }
+                },
+                { safe: true, new : true },
                 function(err, story) {
                     if (err) {
                         console.log("Story: new story -- find story by id and update")
@@ -56,8 +64,13 @@ exports.createStory = (req, res) => {
         /* Update the user to link to the new snippet */
         User.findByIdAndUpdate(
             user.userid,
-            {$push: {'stories': newStory._id}},
-            {safe: true, new : true},
+            { $push: {
+                'stories': { 
+                    $each: [newStory._id], 
+                    $position: 0 }
+                }
+            },
+            { safe: true, new : true },
             function(err, user) {
                 if (err) {
                     console.log("Story: new story -- find user by id and update");
@@ -149,11 +162,9 @@ exports.likeStory = (req, res) => {
     Story.findById(req.params.storyId)
         .then( (story) => {
             let index = story.likeUsers.indexOf(req.user.user.userid);
-            console.log('story index: ' + index);
             if(index == -1) {
                 //like the story
                 story.likeUsers.push(req.user.user.userid);
-                console.log(req.user.user);
                 story.likes++;
                 story.save();
                 res.json({likes: story.likes});

@@ -3,7 +3,7 @@ var User = require('../models/userModel');
 
 
 exports.generateJWT = (user) => {
-    var token = jwt.sign({ user: user }, process.env.SECRET_KEY, { expiresIn: '1d'});
+    var token = jwt.sign({ user: user }, process.env.SECRET_KEY, { expiresIn: '60d'});
     return token;
 }
 
@@ -22,12 +22,20 @@ exports.authenticate = (req, res, next) => {
     token = req.cookies['auth_token']
     verifyJWT(token)
         .then((decodedToken) => {
-            req.user = decodedToken;
-            next();
+            User.findById(decodedToken.user.userid).then( (user) => {
+                if(user !== null && user !== undefined) {
+                    req.user = decodedToken;
+                    next();
+                    return;
+                }
+                res.status(401).json({message: 'invalid authentication'});
+                return;
+            })
         })        
         .catch( (err) => {
             console.log(err)
             res.status(401).json({message: 'invalid authentication'});
+            return;
         });
 }
 
@@ -36,7 +44,6 @@ exports.checkLogin = (req, res) => {
     if(token) {
         verifyJWT(token)
             .then((decodedToken) => {
-                console.log(decodedToken)
                 res.status(200).json({userid: decodedToken.user.userid, username: decodedToken.user.username})
             })
             .catch( (err) => {
