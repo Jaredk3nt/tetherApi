@@ -29,6 +29,9 @@ module.exports = function(app, authController) {
         .get(authController.authenticate, userController.getUser)
         .put(authController.authenticate, userController.updateUser);
 
+    app.route('/api/username/:username')
+        .get(userController.getUserByName);
+
     app.route('/api/login')
         .get(authController.checkLogin)
         .post(userController.login);

@@ -9,6 +9,7 @@ const api = process.env.NODE_ENV === 'production' ? '/api/' : 'https://tethereda
 const state = {
     isLoggedIn: false,
     userid: "",
+    username: "",
     writing: false,
     currentParent: ""
 }
@@ -21,7 +22,7 @@ const getters = {
         return state.isLoggedIn;
     },
     user: state => {
-        return state.userid;
+        return state.username;
     },
     writing: state => {
         return state.writing;
@@ -40,6 +41,7 @@ const mutations = {
         state.isLoggedIn = true;
         state.pending = false;
         state.userid = creds.userid;
+        state.username = creds.username;
     },
     PERSISTENT_LOGIN (state, user) {
         state.isLoggedIn = true;
@@ -50,7 +52,6 @@ const mutations = {
         state.isLoggedIn = false;
     },
     start_writing (state, parent) {
-        
         state.writing = true;
         if(parent) {
             console.log(parent);

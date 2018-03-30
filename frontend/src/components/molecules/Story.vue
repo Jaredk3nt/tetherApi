@@ -30,7 +30,6 @@ export default {
         }
     },
     mounted: function() { 
-        console.log(story)  
     },
     methods: {
         goToStory: function() {
@@ -50,7 +49,7 @@ export default {
                 })
         },
         authorProfile: function() {
-            this.$router.push({name: 'Profile', params: { userId: this.story.authorId }})
+            this.$router.push({name: 'Profile', params: { username: this.story.author }})
         }
     }
 }

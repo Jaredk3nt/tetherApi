@@ -23,14 +23,14 @@ import Story from './molecules/Story.vue';
 import NavBar from './organisms/NavBar.vue';
 export default {
     name:'profile',
-    props: ['userId'],
+    props: ['username'],
     data: function() {
         return {
             user: ''
         }
     },
     mounted: function() {
-        this.$http.get(this.$api + 'user/' + this.userId)
+        this.$http.get(this.$api + 'username/' + this.username)
             .then( res => {
                 this.user = res.body;
             })
@@ -53,7 +53,7 @@ export default {
     },
     methods : {
         getUserData: function() {
-            this.$http.get(this.$api + 'user/' + this.userId)
+            this.$http.get(this.$api + 'username/' + this.username)
                 .then( res => {
                     this.user = res.body;
 

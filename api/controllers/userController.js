@@ -86,6 +86,31 @@ exports.getUser = (req, res) => {
     });
 };
 
+exports.getUserByName = (req, res) => {
+    User.findOne({ username: req.params.username })
+        .then( (user) => {
+            if(user) {
+                getStories(user.stories)
+                    .then( stories => {
+                        user.stories = stories;
+                        res.send(user);
+                        return;
+                    })
+                    .catch( err => {
+                        res.status(500).json({message: err});
+                        return;
+                    })
+            } else {
+                res.status(400).json({message: 'User not found.'});
+                return;
+            }
+        })
+        .catch( (err) => {
+            res.status(500).json({message: err});
+            return;
+        })
+}
+
 exports.updateUser = (req, res) => {
     User.findByIdAndUpdate(req.params.userId, {
         username: req.body.username,
