@@ -37,7 +37,6 @@ const mutations = {
         state.pending = true;
     },
     LOGIN_SUCCESS (state, creds) {
-        console.log('in login succ' + creds);
         state.isLoggedIn = true;
         state.pending = false;
         state.userid = creds.userid;
@@ -84,7 +83,7 @@ const actions = {
         commit('LOGIN'); // show spinner
         return new Promise( (resolve, reject) => {
             Vue.http.post( api + 'login', creds).then( response => {
-                commit('LOGIN_SUCCESS', {userid:response.body._id});
+                commit('LOGIN_SUCCESS', { userid:response.body._id, username: response.body.username });
                 resolve();
             }, error => {
                 //error
