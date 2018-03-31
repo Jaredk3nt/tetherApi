@@ -3,6 +3,7 @@ module.exports = function(app, authController) {
     var storyController = require('../controllers/storyController'),
         userController = require('../controllers/userController');
 
+    // Story Routes
     app.route('/api/stories')
         .get(storyController.listAllStories)
         .post(authController.authenticate, storyController.createStory);
@@ -21,6 +22,11 @@ module.exports = function(app, authController) {
     app.route('/api/parents/:storyId')
         .get(storyController.getFullParentStory);
 
+    app.route('/api/like/:storyId')
+        .post(authController.authenticate, storyController.likeStory);
+
+
+    // User Routes    
     app.route('/api/users')
         .get(authController.authenticate, userController.listAllUsers)
         .post(userController.createUser);
@@ -36,6 +42,6 @@ module.exports = function(app, authController) {
         .get(authController.checkLogin)
         .post(userController.login);
 
-    app.route('/api/like/:storyId')
-        .post(authController.authenticate, storyController.likeStory);
+    app.route('/api/follow/:userId')
+        .post(authController.authenticate, userController.followUser);
 };

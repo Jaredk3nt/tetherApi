@@ -18,6 +18,10 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
+    stories: {
+        type: Array,
+        default: []
+    },
     firstName: {
         type: String,
         default: ''
@@ -26,12 +30,17 @@ var UserSchema = new Schema({
         type: String,
         default: ''
     },
+    followers: {
+        type: Array,
+        default: []
+    },
+    following: {
+        type: Array,
+        default: []
+    },
     profileImg: {
         type: String,
         default: ''
-    },
-    stories: {
-        type: Array
     }
 });
 

@@ -26,6 +26,7 @@ export default {
             this.$router.push('login');
         },
         goToProfile: function() {
+            console.log(this.$store.getters.user);
             this.$router.push('/' + this.$store.getters.user);
         },
         startWriting: function() {

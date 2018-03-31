@@ -83,7 +83,7 @@ const actions = {
         commit('LOGIN'); // show spinner
         return new Promise( (resolve, reject) => {
             Vue.http.post( api + 'login', creds).then( response => {
-                commit('LOGIN_SUCCESS', { userid:response.body._id, username: response.body.username });
+                commit('LOGIN_SUCCESS', { userid: response.body._id, username: response.body.username });
                 resolve();
             }, error => {
                 //error

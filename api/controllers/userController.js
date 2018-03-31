@@ -46,18 +46,20 @@ exports.createUser = (req, res) => {
 };
 
 exports.login = (req, res) => {
+    console.log( req.body.username + " : logging in");
     User.findOne({ username: req.body.username }, function(err, user){
+        console.log(user);
         if (err) {
             res.status(502)
             res.json({ code: 502, message: "Server error: failed to login." });
-        } else if(user == null) {
+        } else if(user === null) {
             res.status(402)
             res.json({ code: 402, message: "Username or password incorrect." });
         } else {
             user.verifyPassword(req.body.password, function(err, response) {
                 if (err) {
                     res.json({ code: 502, message: "Server error: failed to login." });
-                } else if (response == false) {
+                } else if (response === false) {
                     res.json({ code: 402, message: "Username or password incorrect." });
                 } else { // User login is correct!
                     res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}), {path: '/'});
@@ -75,13 +77,13 @@ exports.getUser = (req, res) => {
         }
         if(user) {
             getStories(user.stories)
-            .then( stories => {
-                user.stories = stories;
-                res.send(user);
-            })
-            .catch( err => {
-                res.status(500).json({message: err});
-            })
+                .then( stories => {
+                    user.stories = stories;
+                    res.send(user);
+                })
+                .catch( err => {
+                    res.status(500).json({message: err});
+                })
         }
     });
 };
@@ -143,6 +145,41 @@ exports.getUsersStories = (req, res) => {
         })
 }
 
+exports.followUser = (req, res) => {
+    // Update followed user
+    User.findById(req.params.userId)
+        .then( user => {
+            if (user) {
+                if (!followedBy(user.followers, req.user.user.userid)) {
+                    // Update the calling user
+                    User.findById(req.user.user.userid)
+                        .then( user2 => {
+                            if (user2) {
+                                // Safe to add follower data
+                                user.followers.splice(0, 0, { userid: user2._id, username: user2.username });
+                                user2.following.splice(0, 0, { userid: user._id, username: user.username });
+                                user.save();
+                                user2.save();
+                                res.status(200).json({message: `succesfully followed ${req.params.userId}.`});
+                            } else {
+                                res.status(400).json({message: `${req.user.user.userid} could not be found.`});
+                            }
+                        })
+                        .catch( err => {
+                            res.status(500).json({message: err.message});
+                        });
+                } else {
+                    res.status(400).json({message: `${req.params.userId} could not be found.`});
+                }
+            }
+        })
+        .catch( err => {
+            res.status(500).json({message: err.message});
+        });
+}
+
+
+// Helper Functions
 async function getStories(stories) {
     let storyList = [];
     for (let storyId of stories) {
@@ -150,4 +187,13 @@ async function getStories(stories) {
         storyList.push(story);
     }
     return storyList;
+}
+
+let followedBy = (followers, userid) => {
+    for (let follower of followers) {
+        if (follower.userid === userid) {
+            return true;
+        }
+    }
+    return false;
 }
