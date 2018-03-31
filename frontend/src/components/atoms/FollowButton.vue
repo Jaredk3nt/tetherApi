@@ -9,20 +9,23 @@
 <script>
 export default {
     name:'follow-button',
-    props: ['userid'],
-    data: function() {
-        return {
-            followed: false
-        }
-    },
+    props: ['user'],
     computed: {
         isUser: function() {
-            return this.$store.getters.userid === this.userid;
+            return this.$store.getters.userid === this.user._id;
+        }, 
+        followed: function() {
+            for (let f of this.user.followers) {
+                if (f.userid === this.$store.getters.userid) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     methods: {
         followUser: function() {
-            this.$http.post( this.$api + 'follow/' + this.userid )
+            this.$http.post( this.$api + 'follow/' + this.user._id )
                 .then( response => {
                     this.followed = true;
                 })

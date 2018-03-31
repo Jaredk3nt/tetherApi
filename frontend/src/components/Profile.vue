@@ -4,7 +4,7 @@
     <div class="profile-card-container">
         <div class="profile-header">
             <h1>{{user.username}}</h1>
-            <follow-button :userid="user._id"></follow-button>
+            <follow-button :user="user"></follow-button>
         </div>
         <div class="profile-stats">
             <title-number title="Followers" :value="0"/>
