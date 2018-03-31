@@ -4,6 +4,7 @@
     <div class="profile-card-container">
         <div class="profile-header">
             <h1>{{user.username}}</h1>
+            <follow-button :userid="user._id"></follow-button>
         </div>
         <div class="profile-stats">
             <title-number title="Followers" :value="0"/>
@@ -21,6 +22,8 @@
 import titleNumber from './atoms/titleNumber.vue';
 import Story from './molecules/Story.vue';
 import NavBar from './organisms/NavBar.vue';
+import FollowButton from './atoms/FollowButton.vue';
+
 export default {
     name:'profile',
     props: ['username'],
@@ -56,14 +59,13 @@ export default {
             this.$http.get(this.$api + 'username/' + this.username)
                 .then( res => {
                     this.user = res.body;
-
                 })
                 .catch( err => {
                     console.log(err);
                 })
         }
     },
-    components: { titleNumber, Story, NavBar }
+    components: { titleNumber, Story, NavBar, FollowButton }
 }
 </script>
 
@@ -98,6 +100,12 @@ export default {
 
             .profile-header{
                 text-align: center;
+                margin: 1.25em 0em 1em;
+
+                h1 {
+                    margin-top: 0em;
+                    margin-bottom: .25em;
+                }
             }
 
             .profile-stats {

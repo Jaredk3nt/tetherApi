@@ -24,6 +24,9 @@ const getters = {
     user: state => {
         return state.username;
     },
+    userid: state => {
+        return state.userid;
+    },
     writing: state => {
         return state.writing;
     },
