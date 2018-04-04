@@ -3,7 +3,6 @@
         <button class="follow-button" @click="followUser" v-if="!followed">Follow</button>
         <button class="follow-button followed" v-else>Following</button>
     </div>
-
 </template>
 
 <script>

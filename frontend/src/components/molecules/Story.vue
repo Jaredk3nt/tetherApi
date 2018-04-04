@@ -5,28 +5,46 @@
             <p>{{story.body ? story.body : ' '}}</p>
         </div>
         <div class="story-actions">
-            <div class="action fav" :class="{ liked: liked }" @click="likeStory"><div class="heart icon"></div><p>{{story.likes}}</p></div>
-            <div class="action tether" @click="spawnChild"><div class="link icon"></div><p>{{story.children.length}}</p></div>
+            <div class="action fav" :class="{ liked: liked }" @click="likeStory">
+                <icon :className="heartColor" width="15" height="15" glyph="heart"></icon>
+                <p>{{story.likes}}</p>
+            </div>
+            <div class="action tether" @click="spawnChild">
+                <icon width="15" height="15" glyph="link-intact"></icon>
+                <p>{{story.children.length}}</p>
+                </div>
         </div>
     </div>
 </template>
 
 <script>
-
+import Icon from '../atoms/Icon.vue';
+import Heart from '../../assets/heart.svg';
+import Link from '../../assets/link-intact.svg';
 export default {
     name:'story',
     props: [ 'story' ],
-    components: {},
+    components: { Icon },
     computed: {
         liked: function() {
             if(this.story !== undefined) {
-                let index = this.story.likeUsers.indexOf(this.$store.getters.user);
-                console.log(index)
+                let index = this.story.likeUsers.indexOf(this.$store.getters.userid);
+                console.log(this.story.likeUsers);
                 if(index > -1) {
                     return true;
                 }
                 return false;
             }
+        },
+        heartColor: function() {
+            if(this.liked) {
+                console.log('red');
+                return "red";
+            }else {
+                console.log('grey')
+                return "light-grey";
+            }
+            
         }
     },
     mounted: function() { 
@@ -118,7 +136,7 @@ $card-side-padding-desktop: 2em;
 
 .story-actions {
     width: 100%;
-    padding: .5em $card-side-padding;
+    padding: .75em $card-side-padding;
     display: grid;
     grid-template-columns: 3fr 1fr 1fr;
     border-top: 1px solid $accent-grey;
@@ -131,17 +149,15 @@ $card-side-padding-desktop: 2em;
     }
 
     .action {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
 
         &:hover {
             cursor: pointer;
         }
 
-        .icon {
-            display: inline-block;
-        }
-
         p {
-            display: inline-block;
             margin: 0px 15px 0px 15px;
             font-weight: 500;
             font-size: .85em;
