@@ -8,8 +8,7 @@ var mongoose = require('mongoose'),
 exports.listAllUsers = (req, res) => {
     User.find((err, users) => {
         if(err) {
-            console.log("User: list all")
-            res.send(err);
+            res.status(500).json({ message: err.message });
         }
         res.json(users);
     });
@@ -17,32 +16,45 @@ exports.listAllUsers = (req, res) => {
 
 /* update this to work with passwords */
 exports.createUser = (req, res) => {
-    User.findOne({ username: req.body.username }, function (err, user) {
-        if (user == null) {
-            var newUser = new User({
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                profileImg: req.body.profileImg
-            });
-        
-            newUser.save((err, user) => {
-                if(err) {
-                    console.log('saving user failed');
-                    res.send(err);
-                    return
-                }
-                res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}), {path: '/'});
-                res.json({ username: newUser.username, _id: newUser._id });
-            });
-        } else if (err) {
-            res.json({ code: 501, message: "Creating user failed." });
-        } else {
-            res.json({ code: 401, message: "Username already exists." });
-        }
-    });
+    var letters = /^[0-9a-zA-Z]+$/;
+    if (req.body.username.match(letters)) {
+        User.findOne({ username: req.body.username }, function(err, user) {
+            if (user == null) {
+                User.findOne({ email: req.body.email}, function(err, user) {
+                    if (user == null) {
+                        var newUser = new User({
+                            username: req.body.username,
+                            email: req.body.email,
+                            password: req.body.password,
+                            firstName: req.body.firstName,
+                            lastName: req.body.lastName,
+                            profileImg: req.body.profileImg
+                        });
+                    
+                        newUser.save((err, user) => {
+                            if(err) {
+                                console.log('saving user failed');
+                                res.send(err);
+                                return
+                            }
+                            res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}), {path: '/'});
+                            res.json({ username: newUser.username, _id: newUser._id });
+                        });
+                    } else if (err) {
+                        res.status(501).json({ message: "Creating user failed." });
+                    } else {
+                        res.status(401).json({ message: "Email already in use." });
+                    }
+                })
+            } else if (err) {
+                res.status(501).json({ message: "Creating user failed." });
+            } else {
+                res.status(401).json({ message: "Username already exists." });
+            }
+        });
+    } else {
+        res.status(403).json({ message: "Usernames can only contain letters and numbers." });
+    }
 };
 
 exports.login = (req, res) => {
@@ -50,20 +62,18 @@ exports.login = (req, res) => {
     User.findOne({ username: req.body.username }, function(err, user){
         console.log(user);
         if (err) {
-            res.status(502)
-            res.json({ code: 502, message: "Server error: failed to login." });
+            res.status(502).json({ message: "Server error: failed to login." });
         } else if(user === null) {
-            res.status(402)
-            res.json({ code: 402, message: "Username or password incorrect." });
+            res.status(403).json({ message: "Username or password incorrect." });
         } else {
             user.verifyPassword(req.body.password, function(err, response) {
                 if (err) {
-                    res.json({ code: 502, message: "Server error: failed to login." });
+                    res.status(500).json({ message: "Server error: failed to login." });
                 } else if (response === false) {
-                    res.json({ code: 402, message: "Username or password incorrect." });
+                    res.status(403).json({ message: "Username or password incorrect." });
                 } else { // User login is correct!
                     res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}), {path: '/'});
-                    res.json({ code: 202, _id: user._id, username: req.body.username}); 
+                    res.status(200).json({ _id: user._id, username: req.body.username}); 
                 }
             });
         }

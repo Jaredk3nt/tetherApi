@@ -17,7 +17,7 @@ exports.listAllStories = (req, res) => {
         .limit(pageOptions.limit)
         .exec(function (err, doc) {
             if (err) { 
-                res.status(500).json(err);
+                res.status(500).json({ message: err.message });
                 return; 
             };
             res.status(200).json(doc);
@@ -27,7 +27,7 @@ exports.listAllStories = (req, res) => {
 exports.createStory = (req, res) => {
     var user = req.user.user;
     if (req.body.body === '' || req.body.body.length > 600) {
-        res.code(400).json({message: 'story is invalid and therefore cannot be posted'});
+        res.code(401).json({ message: 'Story is invalid and therefore cannot be posted' });
         return;
     }
     var newStory = new Story({
@@ -39,7 +39,7 @@ exports.createStory = (req, res) => {
 
     newStory.save((err, story) => {
         if (err) {
-            res.send(err);
+            res.status(500).json({ message: err.message });
             return;
         }
         /* Update the parent to include the snip in its children list */
@@ -88,6 +88,9 @@ exports.getStory = (req, res) => {
         if (err) {
             res.send(err);
         }
+        if (story === null || story === undefined) {
+            res.status(404).json({ message: `Story with id ${req.params.storyId} not found`})
+        }
         res.json(story);
     });
 };
@@ -95,7 +98,7 @@ exports.getStory = (req, res) => {
 exports.updateStory = (req, res) => {
     Story.findByIdAndUpdate({ _id: req.params.storyId, author: req.user._id }, {body: req.body.body}, {new: true}, (err, story) => {
         if (err) {
-            res.send(err);
+            res.status(500).json({ message: err.message });
         }
         res.json(story);
     });
@@ -104,8 +107,10 @@ exports.updateStory = (req, res) => {
 exports.deleteStory = (req, res) => {
     Story.remove({_id: req.params.storyId, author: req.user._id}, (err, story) => {
         if (err) {
-            console.log("Story: delete");
-            res.send(err);
+            res.status(500).json({ message: err.message });
+        }
+        if (story === null || story === undefined) {
+            res.status(404).json({ message: `Story with id ${req.params.storyId} not found`});
         }
         res.json(story);
     });
@@ -114,10 +119,11 @@ exports.deleteStory = (req, res) => {
 
 exports.getStoryChildren = (req, res) => {
     Story.findById(req.params.storyId, (err, story) => {
-        if(err) {
-            res.code(400)
-                .json({ message: `story with id: ${req.params.storyId} could not be found`});
-
+        if (err) {
+            res.code(500).json({ message: err.message });
+        }
+        if (story === null || story === undefined) {
+            res.code(404).json({ message: `story with id: ${req.params.storyId} could not be found`});
         }
         getChildren(story.children).then( (childlist) => {
             res.send(childlist);
@@ -137,12 +143,17 @@ async function getChildren(children) {
 exports.getFullParentStory = (req, res) => {
     Story.findById(req.params.storyId)
         .then( (story) => {
-            getParents(story).then( (parents) => {
-                res.send(parents)
-            });
+            if(story) {
+                getParents(story).then( (parents) => {
+                    res.send(parents)
+                });
+            } else {
+                res.status(404).json({ message: `Story with id ${req.params.storyId} not found`});
+            }
+            
         })
         .catch( (error) => {
-            res.code(500).json({ message: 'Server Error' })
+            res.code(500).json({ message: error.message })
         });
 }
 
@@ -161,22 +172,26 @@ async function getParents(story) {
 exports.likeStory = (req, res) => {
     Story.findById(req.params.storyId)
         .then( (story) => {
-            let index = story.likeUsers.indexOf(req.user.user.userid);
-            if(index == -1) {
-                //like the story
-                story.likeUsers.push(req.user.user.userid);
-                story.likes++;
-                story.save();
-                res.json({likes: story.likes});
+            if (story) {
+                let index = story.likeUsers.indexOf(req.user.user.userid);
+                if(index == -1) {
+                    //like the story
+                    story.likeUsers.push(req.user.user.userid);
+                    story.likes++;
+                    story.save();
+                    res.json({likes: story.likes});
+                } else {
+                    story.likeUsers.splice(index, 1)
+                    story.likes--;
+                    story.save();
+                    res.json({likes: story.likes});
+                }
             } else {
-                story.likeUsers.splice(index, 1)
-                story.likes--;
-                story.save();
-                res.json({likes: story.likes});
+                res.status(404).json({ message: `Story with id ${req.params.storyId} not found`})
             }
+            
         })
         .catch( (error) => {
-            console.log(error);
-            res.status(500).json({message: error});
+            res.status(500).json({ message: error.message });
         })
 }

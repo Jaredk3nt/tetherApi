@@ -44,12 +44,12 @@ exports.checkLogin = (req, res) => {
     if(token) {
         verifyJWT(token)
             .then((decodedToken) => {
-                res.status(200).json({userid: decodedToken.user.userid, username: decodedToken.user.username})
+                res.status(200).json({ userid: decodedToken.user.userid, username: decodedToken.user.username })
             })
             .catch( (err) => {
-                res.status(500).json({message: err});
+                res.status(500).json({ message: err });
             })
     } else {
-        res.status(400).json({message: 'client not logged in'});
+        res.status(404).json({ message: 'Client not logged in.' });
     }
 }
