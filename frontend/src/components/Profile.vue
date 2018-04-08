@@ -1,10 +1,10 @@
 <template>
 <div class="profile-container">
-    <router-view/>
+    <loader v-if="loading"></loader>
     <div class="profile-card-container">
         <div class="profile-header">
             <h1>{{user.username}}</h1>
-            <follow-button :user="user"></follow-button>
+            <follow-button :user="user" @followed="followedUser"></follow-button>
         </div>
         <div class="profile-stats">
             <title-number title="Followers" :value="0"/>
@@ -23,23 +23,20 @@ import titleNumber from './atoms/titleNumber.vue';
 import Story from './molecules/Story.vue';
 import NavBar from './organisms/NavBar.vue';
 import FollowButton from './atoms/FollowButton.vue';
+import Loader from './atoms/Loader.vue';
 
 export default {
     name:'profile',
     props: ['username'],
     data: function() {
         return {
-            user: ''
+            user: '',
+            loading: false
         }
     },
     mounted: function() {
-        this.$http.get(this.$api + 'username/' + this.username)
-            .then( res => {
-                this.user = res.body;
-            })
-            .catch( err => {
-                console.log(err);
-            })
+        this.loading = true;
+        this.getUserData()
     },
     computed: {
         likes: function() {
@@ -56,16 +53,21 @@ export default {
     },
     methods : {
         getUserData: function() {
+            this.loading = true;
             this.$http.get(this.$api + 'username/' + this.username)
                 .then( res => {
+                    this.loading = false;
                     this.user = res.body;
                 })
                 .catch( err => {
                     console.log(err);
                 })
+        },
+        followedUser: function(id) {
+            this.user.followers.push({ username: this.$store.getters.user, userid: this.$store.getters.userid});
         }
     },
-    components: { titleNumber, Story, NavBar, FollowButton }
+    components: { titleNumber, Story, NavBar, FollowButton, Loader }
 }
 </script>
 

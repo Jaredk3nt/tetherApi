@@ -1,31 +1,36 @@
 <template>
-<div class="">
-    <router-view/>
-    <div class="homepage">
-        <div class="story-list">
-            <story v-for="story in stories" v-bind:key="story._id" :story="story"/>
-            <div class="load-button-wrapper" v-if="showButton"><button class="load-button" @click="nextPage" >Load More</button></div>
+    <div>
+        <router-view/>
+        <div class="homepage">
+            <loader v-if="loading"></loader>
+            <div class="story-list">
+                <story v-for="story in stories" v-bind:key="story._id" :story="story"/>
+                <div class="load-button-wrapper" v-if="showButton"><button class="load-button" @click="nextPage" >Load More</button></div>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
 import Story from '@/components/molecules/Story.vue';
 import NavBar from '@/components/organisms/NavBar.vue';
+import Loader from '@/components/atoms/Loader.vue';
 
 export default {
     name: 'Home',
     data () {
         return {
             stories: [],
-            currentPage: 0
+            currentPage: 0,
+            loading: false
         }
     },
     methods: {
         fetchStories: function() {
+            this.loading = true;
             this.$http.get( this.$api + 'stories', {params: {page: this.currentPage}})
                 .then( response => {
+                    this.loading = false;
                     this.stories = this.stories.concat(response.body);
                 }, error => {
                     console.log("on no error");
@@ -47,7 +52,7 @@ export default {
     mounted() {
         this.fetchStories();
     },
-    components: {Story, NavBar}
+    components: {Story, NavBar, Loader}
 }
 </script>
 

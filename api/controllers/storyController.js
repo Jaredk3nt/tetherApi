@@ -179,7 +179,7 @@ exports.likeStory = (req, res) => {
                     story.likeUsers.push(req.user.user.userid);
                     story.likes++;
                     story.save();
-                    res.json({likes: story.likes});
+                    res.json({likes: story.likes, likeUsers: story.likeUsers});
                 } else {
                     story.likeUsers.splice(index, 1)
                     story.likes--;

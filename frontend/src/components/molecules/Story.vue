@@ -29,7 +29,6 @@ export default {
         liked: function() {
             if(this.story !== undefined) {
                 let index = this.story.likeUsers.indexOf(this.$store.getters.userid);
-                console.log(this.story.likeUsers);
                 if(index > -1) {
                     return true;
                 }
@@ -38,10 +37,8 @@ export default {
         },
         heartColor: function() {
             if(this.liked) {
-                console.log('red');
                 return "red";
             }else {
-                console.log('grey')
                 return "light-grey";
             }
             
@@ -59,7 +56,14 @@ export default {
         likeStory: function() {
             this.$http.post(this.$api + 'like/' + this.story._id)
                 .then( res => {
-                    //this.liked = !this.liked;
+                    if (this.liked === true) {
+                        let i = this.story.likeUsers.indexOf(this.$store.getters.userid)
+                        if (i > -1) {
+                            this.story.likeUsers.splice(i, 1)
+                        }
+                    } else {
+                        this.story.likeUsers.push(this.$store.getters.userid);
+                    }
                     this.story.likes = res.body.likes
                 })
                 .catch( err => {

@@ -26,7 +26,8 @@ export default {
         followUser: function() {
             this.$http.post( this.$api + 'follow/' + this.user._id )
                 .then( response => {
-                    this.followed = true;
+                    this.$emit('followed');
+                    //this.followed = true;
                 })
                 .catch( err => {
 
