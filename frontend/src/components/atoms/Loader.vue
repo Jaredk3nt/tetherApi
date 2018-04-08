@@ -13,7 +13,11 @@ export default {
 <style lang="scss" scoped>
 @import '../../styles/styles.scss';
 .loader-container {
-    margin-top: 2em;
+    margin-top: 50%;
+
+    @include desktop {
+        margin-top: 3em;
+    }
 }
 .loader {
     font-size: 10px;

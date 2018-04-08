@@ -1,9 +1,10 @@
 <template>
     <div id="app" :class="{'nav-hidden': !showNav}">
         <post v-if="postOpen" :parent="parent"/>
-        <div class="page-body" >
+        <div class="page-body">
+            <loader v-if="loading"></loader>
             <keep-alive include="Home, story-view">
-                <router-view/>
+                <router-view @loading="loaderState"/>
             </keep-alive>
         </div>
         <nav-bar v-if="showNav"/>
@@ -13,10 +14,16 @@
 <script>
 import NavBar from '@/components/organisms/NavBar.vue';
 import Post from '@/components/organisms/Post.vue';
+import Loader from '@/components/atoms/Loader.vue';
 
 export default {
     name: 'App',
-    components: { NavBar, Post },
+    components: { NavBar, Post, Loader },
+    data: function() {
+        return {
+            loading: false
+        }
+    },
     computed: {
         postOpen: function() {
             return this.$store.getters.writing;
@@ -34,6 +41,12 @@ export default {
     mounted: function() {
         console.log(process.env.NODE_ENV);
         this.$store.dispatch('checkLogin');
+    },
+    methods: {
+        loaderState: function(state) {
+            console.log("Loading: " + state);
+            this.loading = state;
+        }
     }
 }
 </script>
