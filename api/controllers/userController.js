@@ -17,7 +17,7 @@ exports.listAllUsers = (req, res) => {
 /* update this to work with passwords */
 exports.createUser = (req, res) => {
     var letters = /^[0-9a-zA-Z]+$/;
-    if (req.body.username.match(letters)) {
+    if ( req.body.username.match(letters) ) {
         User.findOne({ username: req.body.username }, function(err, user) {
             if (user == null) {
                 User.findOne({ email: req.body.email}, function(err, user) {
@@ -30,11 +30,16 @@ exports.createUser = (req, res) => {
                             lastName: req.body.lastName,
                             profileImg: req.body.profileImg
                         });
-                    
+                        // Hash the password
+                        newUser.hashPassword(function(err, response) {
+                            if (err) {
+                                res.status(501).json({ message: "Creating user failed." });
+                            }
+                        });
+                        // Save the user
                         newUser.save((err, user) => {
                             if(err) {
-                                console.log('saving user failed');
-                                res.send(err);
+                                res.status(501).json({ message: "Creating user failed." });
                                 return
                             }
                             res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}), {path: '/'});

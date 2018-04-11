@@ -46,33 +46,33 @@ var UserSchema = new Schema({
 });
 
 //Before each save we want to verify an update to the password
-UserSchema.pre('save', function(callback) {
+// UserSchema.pre('save', function(callback) {
+//     var user = this;
+//     callback();
+// });
+
+UserSchema.methods.hashPassword = function(callback) {
     var user = this;
-    console.log(user.password)
-    //Hash the password so it isnt saved in plaintext
     bcrypt.genSalt(5, function(err, salt) {
         if (err) {
-            console.log("gen salt");
             return callback(err);
         }
 
         bcrypt.hash(user.password, salt, null, function(err, hash) {
             if (err) {
-                console.log("hash")
                 return callback(err);
             }
 
             user.password = hash;
-
+            user.save();
             callback();
         });
     });
-});
+}
 
 UserSchema.methods.verifyPassword = function(password, callback) {
     bcrypt.compare(password, this.password, function(err, isMatch) {
         if (err) {
-            console.log("User: bcrypt compare")
             return callback(err);
         }
 
