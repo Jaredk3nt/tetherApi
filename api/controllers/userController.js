@@ -60,17 +60,16 @@ exports.createUser = (req, res) => {
 exports.login = (req, res) => {
     console.log( req.body.username + " : logging in");
     User.findOne({ username: req.body.username }, function(err, user){
-        console.log(user);
         if (err) {
             res.status(502).json({ message: "Server error: failed to login." });
         } else if(user === null) {
-            res.status(403).json({ message: "Username or password incorrect." });
+            res.status(401).json({ message: "User account not found." });
         } else {
             user.verifyPassword(req.body.password, function(err, response) {
                 if (err) {
                     res.status(500).json({ message: "Server error: failed to login." });
                 } else if (response === false) {
-                    res.status(403).json({ message: "Username or password incorrect." });
+                    res.status(401).json({ message: "Username or password incorrect." });
                 } else { // User login is correct!
                     res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}), {path: '/'});
                     res.status(200).json({ _id: user._id, username: req.body.username}); 

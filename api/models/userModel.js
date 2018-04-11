@@ -48,6 +48,7 @@ var UserSchema = new Schema({
 //Before each save we want to verify an update to the password
 UserSchema.pre('save', function(callback) {
     var user = this;
+    console.log(user.password)
     //Hash the password so it isnt saved in plaintext
     bcrypt.genSalt(5, function(err, salt) {
         if (err) {
@@ -62,6 +63,7 @@ UserSchema.pre('save', function(callback) {
             }
 
             user.password = hash;
+
             callback();
         });
     });
