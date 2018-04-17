@@ -31,8 +31,9 @@ export default {
 
 .controls-modal {
     background-color: $white;
-    width: 95%;
+    width: 100%;
     box-sizing: border-box;
+    border-top: 2px solid $accent-grey;
 
     ul {
         list-style: none;

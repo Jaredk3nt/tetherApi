@@ -6,6 +6,12 @@
   }
 }
 
+@mixin tinyphone {
+  @media (max-width: #{$tinyphone-width}) {
+    @content;
+  }
+}
+
 body {
     background-color: $background;
     margin: 0px;

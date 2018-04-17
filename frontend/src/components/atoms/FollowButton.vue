@@ -41,11 +41,14 @@ export default {
 @import '../../styles/styles.scss';
 
 .follow-button {
+    width: 100%;
     border: 2px solid $accent-green;
     background-color: $white;
     color: $accent-green;
     padding: .5em 3em;
-    border-radius: 25px;
+    border-radius: 10px;
+    font-size: .85rem;
+    font-weight: 700;
 
     &:hover {
         cursor: pointer;
