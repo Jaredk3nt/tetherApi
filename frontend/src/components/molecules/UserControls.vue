@@ -16,7 +16,7 @@ export default {
             console.log('logout')
             this.$http.post(this.$api + 'logout')
                 .then( (res) => {
-                    
+                    this.$router.push('/');
                 })
                 .catch( (err) => {
                     
@@ -68,6 +68,7 @@ export default {
 
                 &:focus {
                     outline: none;
+                    color: $light-grey;
                 }
             }
         }

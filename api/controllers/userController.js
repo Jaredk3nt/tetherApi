@@ -85,6 +85,7 @@ exports.login = (req, res) => {
 }
 
 exports.logout = (req, res) => {
+    console.log('logout' + req.user.user.username)
     User.findById(req.user.user.userid)
         .then( (user) => {
             if (user !== null || user !== undefined) {

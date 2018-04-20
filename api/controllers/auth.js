@@ -19,7 +19,8 @@ var verifyJWT = (token) => {
 }
 
 exports.authenticate = (req, res, next) => {
-    token = req.cookies['auth_token']
+    token = req.cookies['auth_token'];
+    console.log(token);
     verifyJWT(token)
         .then((decodedToken) => {
             User.findById(decodedToken.user.userid).then( (user) => {

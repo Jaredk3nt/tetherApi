@@ -23,4 +23,7 @@ export default {
 .red {
     fill: red;
 }
+.grey {
+  fill: #5f5f5f;
+}
 </style> 

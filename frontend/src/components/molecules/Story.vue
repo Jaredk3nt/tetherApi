@@ -12,7 +12,7 @@
             <div class="action tether" @click="spawnChild">
                 <icon width="15" height="15" glyph="link-intact"></icon>
                 <p>{{story.children.length}}</p>
-                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -21,6 +21,7 @@
 import Icon from '../atoms/Icon.vue';
 import Heart from '../../assets/heart.svg';
 import Link from '../../assets/link-intact.svg';
+
 export default {
     name:'story',
     props: [ 'story' ],

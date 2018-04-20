@@ -1,18 +1,18 @@
 <template>
     <div>
-        <button class="t-button" @click="click">{{ text }}</button>
+        <button class="t-button" @click="click" :class="{off: off}">
+            <slot></slot>
+        </button>
     </div>
 </template>
 
 <script>
 export default {
     name:'t-button',
-    props: [ 'clickAction', 'text' ],
+    props: [ 'clickAction', 'off'],
     methods: {
         click: function() {
-            
             this.$emit(this.clickAction);
-            console.log(this.clickAction);
         }
     }
 }
@@ -32,10 +32,29 @@ $standard: #5f5f5f;
     font-size: .85rem;
     font-weight: 700;
 
+    &.off {
+        color: darken($accent-grey, 5%);
+        background-color: $accent-grey;
+        border: 2px solid darken($accent-grey, 5%);
+
+        &:hover {
+            cursor: default;
+            background-color: $accent-grey;
+            color: darken($accent-grey, 5%);
+        }
+    }
     &:hover {
         cursor: pointer;
         background-color: $standard;
         color: $white;
+
+        .cog {
+            fill: $white;
+        }
+    }
+
+    .cog {
+        fill: darken(#5f5f5f, 10%);
     }
 }
 </style>
