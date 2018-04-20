@@ -52,6 +52,8 @@ const mutations = {
     },
     LOGOUT (state) {
         state.isLoggedIn = false;
+        state.userid = "";
+        state.username = "";
     },
     start_writing (state, parent) {
         state.writing = true;
@@ -96,7 +98,6 @@ const actions = {
         });
     },
     logout ({ commit }) {
-        localStorage.removeItem("token");
         commit(LOGOUT);
     },
     createUser ({ commit }, creds) {

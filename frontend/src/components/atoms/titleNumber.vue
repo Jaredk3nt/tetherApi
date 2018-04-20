@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <p>{{title}}</p>
         <h3>{{value}}</h3>
+        <p>{{title}}</p>
     </div>
 </template>
 
@@ -15,12 +15,27 @@ export default {
 <style lang="scss" scoped>
 @import '../../styles/styles.scss';
 .container {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
     p {
-        margin: .5em 0em 0em 0em;
-        font-size: .75rem;
+        display: inline;
+        font-size: .95rem;
+        margin: 0em 0em 0em .5em;
+
+        @include tinyphone {
+            font-size: .85rem;
+        }
     }
     h3 {
-        margin: .5em 0em 1em 0em;
+        display: inline;
+        margin: 0px;
+        font-size: 1rem;
+        font-weight: 900;
+
+        @include tinyphone {
+            font-size: .95rem;
+        }
     }
 }
 </style>

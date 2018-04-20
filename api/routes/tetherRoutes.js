@@ -42,6 +42,9 @@ module.exports = function(app, authController) {
         .get(authController.checkLogin)
         .post(userController.login);
 
+    app.route('/api/logout')
+        .post(authController.authenticate, userController.logout);
+
     app.route('/api/follow/:userId')
         .post(authController.authenticate, userController.followUser);
 };
