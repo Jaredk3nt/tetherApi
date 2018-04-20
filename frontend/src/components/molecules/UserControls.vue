@@ -16,10 +16,11 @@ export default {
             console.log('logout')
             this.$http.post(this.$api + 'logout')
                 .then( (res) => {
+                    this.$store.dispatch('logout');
                     this.$router.push('/');
                 })
                 .catch( (err) => {
-                    
+                    console.log('error logging out');
                 });
         }
     }

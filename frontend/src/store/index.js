@@ -98,7 +98,7 @@ const actions = {
         });
     },
     logout ({ commit }) {
-        commit(LOGOUT);
+        commit('LOGOUT');
     },
     createUser ({ commit }, creds) {
         commit('LOGIN'); // show spinner
