@@ -71,7 +71,7 @@ exports.login = (req, res) => {
         if (err) {
             res.status(502).json({ message: "Server error: failed to login." });
         } else if(user === null) {
-            res.status(401).json({ message: "User account not found." });
+            res.status(404).json({ message: "User account not found." });
         } else { 
             user.verifyPassword(req.body.password, function(err, response) {
                 if (err) {
@@ -100,7 +100,7 @@ exports.logout = (req, res) => {
             }
         })
         .catch( (err) => {
-            res.status(500).json({message: err});
+            res.status(500).json({ message: err });
             return;
         });
 }
@@ -108,18 +108,22 @@ exports.logout = (req, res) => {
 exports.getUser = (req, res) => {
     User.findById(req.params.userId, (err, user) => {
         if(err) {
-            res.send(err);
+            res.status(500).json({ message: err });
+        } else {
+            if(user) {
+                getStories(user.stories)
+                    .then( stories => {
+                        user.stories = stories;
+                        res.send(user);
+                    })
+                    .catch( err => {
+                        res.status(500).json({message: err});
+                    })
+            } else {
+                res.status(404).json({ message: 'User not found'});
+            }
         }
-        if(user) {
-            getStories(user.stories)
-                .then( stories => {
-                    user.stories = stories;
-                    res.send(user);
-                })
-                .catch( err => {
-                    res.status(500).json({message: err});
-                })
-        }
+        
     });
 };
 
@@ -167,16 +171,21 @@ exports.updateUser = (req, res) => {
 exports.getUsersStories = (req, res) => {
     User.findById(req.params.userId)
         .then( user => {
-            getStories(user.stories)
+            if( user !== null || user !== undefined) {
+                getStories(user.stories)
                 .then( stories => {
                     res.send(stories);
                 })
                 .catch( err => {
                     res.status(500).json({message: err});
                 })
+            } else {
+                res.status(404).json({ message: 'User account not found.'})
+            }
+            
         })
         .catch( err => {
-            res.status(400).json({message: err});
+            res.status(500).json({message: err});
         })
 }
 
