@@ -56,11 +56,12 @@ export default {
         signup: function() {
             //Check to ensure their password is correct
             if(this.password === this.password2) {
-                this.$store.dispatch('createUser', { email: this.email, username: this.username, password: this.password }).then( response => {
-                    this.$router.go(-1);
-                }, error => {
-                    this.showError('Error: could not create account - ' + error);
-                });
+                this.$store.dispatch('createUser', { email: this.email, username: this.username, password: this.password })
+                    .then( response => {
+                        this.$router.go(-1);
+                    }, error => {
+                        this.showError('Error: could not create account - ' + error.body.message);
+                    });
             } else {
                 this.showError('Passwords do not match');
             }

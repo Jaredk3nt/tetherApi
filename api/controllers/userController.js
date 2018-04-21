@@ -5,12 +5,15 @@ var mongoose = require('mongoose'),
     Story = mongoose.model('Story'),
     auth = require('./auth.js')
 
+const COOKIE_TIMEOUT = 86400000 * 14;
+
 exports.listAllUsers = (req, res) => {
     User.find((err, users) => {
         if(err) {
             res.status(500).json({ message: err.message });
+        } else {
+            res.json(users);
         }
-        res.json(users);
     });
 };
 
@@ -42,7 +45,7 @@ exports.createUser = (req, res) => {
                                 res.status(501).json({ message: "Creating user failed." });
                                 return
                             }
-                            res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}), {path: '/'});
+                            res.cookie('auth_token', auth.generateJWT({ userid: newUser._id, username: newUser.username}), { path: '/', maxAge: COOKIE_TIMEOUT });
                             res.json({ username: newUser.username, _id: newUser._id });
                         });
                     } else if (err) {
@@ -69,14 +72,14 @@ exports.login = (req, res) => {
             res.status(502).json({ message: "Server error: failed to login." });
         } else if(user === null) {
             res.status(401).json({ message: "User account not found." });
-        } else {
+        } else { 
             user.verifyPassword(req.body.password, function(err, response) {
                 if (err) {
                     res.status(500).json({ message: "Server error: failed to login." });
                 } else if (response === false) {
                     res.status(401).json({ message: "Username or password incorrect." });
                 } else { // User login is correct!
-                    res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}), {path: '/'});
+                    res.cookie('auth_token', auth.generateJWT({ userid: user._id, username: user.username}), {path: '/', maxAge: COOKIE_TIMEOUT});
                     res.status(200).json({ _id: user._id, username: req.body.username}); 
                 }
             });
@@ -154,10 +157,10 @@ exports.updateUser = (req, res) => {
         profileImg: req.body.profileImg
     }, (err, user) => {
         if(err) {
-            console.log("User: update")
-            res.send(err);
+            res.status(500).json({message: err});
+        } else {
+            res.json(user);
         }
-        res.json(user);
     });
 };
 

@@ -20,23 +20,22 @@ var verifyJWT = (token) => {
 
 exports.authenticate = (req, res, next) => {
     token = req.cookies['auth_token'];
-    console.log(token);
     verifyJWT(token)
-        .then((decodedToken) => {
+        .then( (decodedToken) => {
             User.findById(decodedToken.user.userid).then( (user) => {
                 if(user !== null && user !== undefined) {
                     req.user = decodedToken;
                     next();
                     return;
+                } else {
+                    res.status(401).json({message: 'invalid authentication'});
                 }
-                res.status(401).json({message: 'invalid authentication'});
-                return;
             })
         })        
         .catch( (err) => {
             console.log(err)
             res.status(401).json({message: 'invalid authentication'});
-            return;
+
         });
 }
 
