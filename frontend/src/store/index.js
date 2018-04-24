@@ -36,44 +36,44 @@ const getters = {
 }
 
 const mutations = {
-    LOGIN (state) {
+    LOGIN(state) {
         state.pending = true;
     },
-    LOGIN_SUCCESS (state, creds) {
+    LOGIN_SUCCESS(state, creds) {
         state.isLoggedIn = true;
         state.pending = false;
-        state.userid = creds.userid;
+        state.userid = creds._id;
         state.username = creds.username;
     },
-    PERSISTENT_LOGIN (state, user) {
+    PERSISTENT_LOGIN(state, user) {
         state.isLoggedIn = true;
-        state.userid = user.userid;
+        state.userid = user._id;
         state.username = user.username;
     },
-    LOGOUT (state) {
+    LOGOUT(state) {
         state.isLoggedIn = false;
         state.userid = "";
         state.username = "";
     },
-    start_writing (state, parent) {
+    start_writing(state, parent) {
         state.writing = true;
-        if(parent) {
+        if (parent) {
             console.log(parent);
             state.currentParent = parent;
         }
     },
-    stop_writing (state) {
+    stop_writing(state) {
         state.writing = false;
         state.currentParent = ''
     }
 }
 
 const actions = {
-    post ({ commit, getters }, story_obj) {
+    post({ commit, getters }, story_obj) {
         // Send story to API
         // On completion
-        return new Promise( (resolve, reject) => {
-            Vue.http.post( api + 'stories', { body: story_obj.story, parent: story_obj.parent }).then( response => {
+        return new Promise((resolve, reject) => {
+            Vue.http.post(api + 'stories', { body: story_obj.story, parent: story_obj.parent }).then(response => {
                 console.log("posted: " + story_obj.story)
                 commit('stop_writing');
                 resolve();
@@ -82,13 +82,13 @@ const actions = {
                 reject();
             });
         });
-        
+
     },
-    login ({ commit }, creds) {
+    login({ commit }, creds) {
         commit('LOGIN'); // show spinner
-        return new Promise( (resolve, reject) => {
-            Vue.http.post( api + 'login', creds).then( response => {
-                commit('LOGIN_SUCCESS', { userid: response.body._id, username: response.body.username });
+        return new Promise((resolve, reject) => {
+            Vue.http.post(api + 'login', creds).then(response => {
+                commit('LOGIN_SUCCESS', { _id: response.body._id, username: response.body.username });
                 resolve();
             }, error => {
                 //error
@@ -97,14 +97,14 @@ const actions = {
             });
         });
     },
-    logout ({ commit }) {
+    logout({ commit }) {
         commit('LOGOUT');
     },
-    createUser ({ commit }, creds) {
+    createUser({ commit }, creds) {
         commit('LOGIN'); // show spinner
-        return new Promise( (resolve, reject) => {
-            Vue.http.post( api + 'users', creds).then( response => {
-                commit('LOGIN_SUCCESS', {userid: response.body._id});
+        return new Promise((resolve, reject) => {
+            Vue.http.post(api + 'users', creds).then(response => {
+                commit('LOGIN_SUCCESS', { userid: response.body._id });
                 resolve();
             }, error => {
                 //error
@@ -113,13 +113,13 @@ const actions = {
             });
         });
     },
-    checkLogin ({ commit }) {
+    checkLogin({ commit }) {
         Vue.http.get(api + 'login')
-            .then( res => {
+            .then(res => {
                 console.log(res.body);
                 commit('PERSISTENT_LOGIN', res.body);
             })
-            .catch( err => {
+            .catch(err => {
                 console.log(err);
             });
     }
