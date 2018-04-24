@@ -23,10 +23,9 @@ export default {
     },
     methods: {
         login: function() {
-            this.$router.push('login');
+             this.$router.push({ name: 'Login' });
         },
         goToProfile: function() {
-            console.log(this.$store.getters.user);
             this.$router.push('/' + this.$store.getters.user);
         },
         startWriting: function() {
