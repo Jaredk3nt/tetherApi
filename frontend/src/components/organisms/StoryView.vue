@@ -2,10 +2,10 @@
     <div class="outer-container">
         <div class="inner-container">
             <div class="task-bar">
-                <toolbar/>
+                <toolbar @parent="viewParent" :hasParent="hasParent"/>
             </div>
             <div class="story-card-container">
-                <story :story="this.story"/>
+                <story :story="storyObj"/>
             </div>
             <div class="children-container">
                 <story v-for="child in children" v-bind:key="child._id" :story="child"/>
@@ -20,34 +20,50 @@ import Toolbar from '../atoms/Toolbar.vue';
 
 export default {
     name:'story-view',
-    props: ['username', 'story_id', 'story'],
+    props: ['username', 'story_id'],
     components: {Story, Toolbar},
     data: function() {
         return {
+            story: undefined,
             children: []
         }
     },
-    mounted: function() {
-        if(this.story === undefined) {
-            this.getStory(this.story_id);
+    computed: {
+        hasParent: function() {
+            if (this.story !== undefined) {
+                return this.story.parent.length > 0;
+            }
+            return false;
+        },
+        storyObj: function() {
+            if (this.story !== undefined) {
+                return this.story;
+            }
+            return {};
         }
+    },
+    mounted: function() {
+        this.getStory(this.story_id, (res) => {
+            this.story = res.body
+        });
         this.getChildren(this.story_id);
     },
     beforeRouteUpdate (to, from, next) {
+        console.log('update');
         this.children = [];
-        // if(to.params.story === undefined) {
-        //     this.getStory(to.params.story_id);
-        // }
-        //this.children = this.story.children.map( x => {})
+        this.getStory(to.params.story_id, (res) => {
+            this.story = res.body;
+            this.getChildren(to.params.story_id);
+            next();
+        });
         this.getChildren(to.params.story_id);
         next();
     },
     methods: {
-        getStory: function(id) {
+        getStory: function(id, callback) {
             this.$http.get( this.$api + 'story/' + id).then( response => {
-                //this.story = response.body
+                callback(response);
             }, error => {
-                //error
                 console.log(error);
             });
         },
@@ -55,9 +71,17 @@ export default {
             this.$http.get( this.$api + 'children/' + id).then( response => {
                 this.children = response.body;
             }, error => {
-                //error
                 console.log(error);
             });
+        },
+        viewParent: function() {
+            if( this.story !== undefined ) {
+                if (this.story.parent.length > 0) {
+                    this.getStory(this.story.parent, (res) => {
+                        this.$router.push({ name: 'Story', params: { story_id: this.story.parent, story: res.body, user: res.body.author }})
+                    });
+                }
+            }
         }
     }
 
@@ -109,7 +133,7 @@ export default {
         .children-container {
             width: $mobile-card-width;
             @include desktop {
-                width: $desktop-card-width;
+                width: 48%;
             }
         }
     }

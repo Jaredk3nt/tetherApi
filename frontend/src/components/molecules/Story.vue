@@ -11,7 +11,7 @@
             </div>
             <div class="action tether" @click="spawnChild">
                 <icon width="15" height="15" glyph="link-intact"></icon>
-                <p>{{story.children.length}}</p>
+                <p>{{numChildren}}</p>
             </div>
         </div>
     </div>
@@ -28,13 +28,19 @@ export default {
     components: { Icon },
     computed: {
         liked: function() {
-            if(this.story !== undefined) {
+            if('likeUsers' in this.story) {
                 let index = this.story.likeUsers.indexOf(this.$store.getters.userid);
                 if(index > -1) {
                     return true;
                 }
                 return false;
             }
+        },
+        numChildren: function() {
+            if ('children' in this.story) {
+                return this.story.children.length;
+            }
+            return 0;
         },
         heartColor: function() {
             if(this.liked) {
@@ -49,7 +55,7 @@ export default {
     },
     methods: {
         goToStory: function() {
-            this.$router.push({ name: 'Story', params: { user: this.story.author, story_id: this.story._id, story: this.story}})
+            this.$router.push({ name: 'Story', params: { user: this.story.author, story_id: this.story._id}})
         },
         spawnChild: function() {
             this.$store.commit('start_writing', this.story._id)
